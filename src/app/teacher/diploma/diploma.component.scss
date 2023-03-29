@@ -1,0 +1,18 @@
+.custome-size {
+  font-size: 1rem;
+}
+.pdf-icon {
+  cursor: pointer;
+  transition: 0.6s;
+}
+.pdf-icon:hover {
+  scale: 1.05;
+}
+
+.delete-icon{
+  transition: .6s;
+  cursor: pointer;
+}
+.delete-icon:hover{
+ transform: scale(1.1);
+}

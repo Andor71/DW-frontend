@@ -1,0 +1,259 @@
+<div class="content-wrapper p-0" *ngIf="!isLoading">
+  <div class="content-body p-0">
+    <div class="profile-foreground position-relative mx-n4 mt-n4">
+      <div class="profile-wid-bg">
+        <img
+          src="assets/images/small/img-1.jpg"
+          alt=""
+          style=""
+          class="profile-wid-img" />
+      </div>
+    </div>
+    <div class="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
+      <div class="row g-4">
+        <div class="col">
+          <div class="p-2">
+            <h3 class="text-white mb-1 d-flex align-items-center">
+              <i class="ri-book-2-fill me-1 display-3"></i>
+              Új diploma létrehozása
+            </h3>
+            <h5 class="text-white">
+              Időszak: {{ yearDto.firstYear }} -
+              {{ yearDto.secondYear }}
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form
+      class="card p-3"
+      (ngSubmit)="create()"
+      enctype="multipart/form-data"
+      autocomplete="off">
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group mb-2">
+            <label for="major"><h5>Szak</h5></label>
+            <select
+              id="major"
+              class="form-select mb-1"
+              [(ngModel)]="selectedMajorId"
+              name="major"
+              [ngClass]="{
+                'is-invalid': submitted && error == 1
+              }">
+              <ng-container *ngFor="let item of allPeriods">
+                <option [ngValue]="item.periodId">
+                  {{ item.major.programme }}
+                </option>
+              </ng-container>
+            </select>
+            <div
+              *ngIf="submitted && error == 1"
+              class="invalid-feedback">
+              Major is required!
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="title"><h5>Diploma Cím</h5></label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              class="form-control mb-1"
+              [(ngModel)]="diploma.title"
+              [ngClass]="{
+                'is-invalid': submitted && error == 2
+              }" />
+            <div
+              *ngIf="submitted && error == 2"
+              class="invalid-feedback">
+              Title is required!
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="title"><h5>Leírás</h5></label>
+            <div
+              [ngClass]="{
+                'border border-danger': submitted && error == 8
+              }">
+              <ckeditor
+                [editor]="Editor"
+                name="description"
+                [(ngModel)]="diploma.description"
+                data=""></ckeditor>
+            </div>
+          </div>
+          <div
+            *ngIf="submitted && error == 3"
+            class="invalid-feedback">
+            Description is required!
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="title"><h5>Kivitelezés részletei</h5></label>
+            <div
+              [ngClass]="{
+                'border border-danger': submitted && error == 8
+              }">
+              <ckeditor
+                [editor]="Editor"
+                name="details"
+                [(ngModel)]="diploma.details"
+                data=""></ckeditor>
+            </div>
+          </div>
+          <div
+            *ngIf="submitted && error == 4"
+            class="invalid-feedback">
+            Kivitelezés részletei kötelező!
+          </div>
+          <div class="form-group mb-3">
+            <label for="keywords"><h5>Kulcsszavak</h5></label>
+            <ng-select
+              name="keywords"
+              [items]="keywords"
+              class="form-control mb-5"
+              bindLabel="keyword"
+              bindValue="id"
+              [addTag]="addCustomKeyWord"
+              [(ngModel)]="customKeywords"
+              [multiple]="true"
+              [ngClass]="{
+                'is-invalid': submitted && error == 5
+              }">
+            </ng-select>
+            <div
+              *ngIf="submitted && error == 5"
+              class="invalid-feedback">
+              Type in atleast 3 keywords!
+            </div>
+          </div>
+
+          <div
+            class="form-check form-switch form-switch-md"
+            dir="ltr">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="visibility"
+              name="visibility"
+              class="form-check-input mb-5"
+              [(ngModel)]="visibility" />
+            <label class="form-check-label" for="visibility"
+              >Visible for everyone:</label
+            >
+          </div>
+
+          <div class="form-group mb-3" *ngIf="visibility">
+            <label for="student"><h5>Assigne to student</h5></label>
+            <ng-select
+              id="student"
+              name="student"
+              [items]="activeStudents"
+              bindLabel="infoName"
+              bindValue="id"
+              class="form-control mb-5"
+              [(ngModel)]="selectedUserId"
+              [ngClass]="{
+                'is-invalid': submitted && error == 6
+              }">
+            </ng-select>
+            <div
+              *ngIf="submitted && error == 6 && visibility"
+              class="invalid-feedback">
+              Choose a student!
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="form-group mb-3">
+            <label for="title"><h5>Bibliográfia</h5></label>
+            <div
+              [ngClass]="{
+                'border border-danger': submitted && error == 8
+              }">
+              <ckeditor
+                [editor]="Editor"
+                name="bibliography"
+                [(ngModel)]="diploma.bibliography"
+                data=""></ckeditor>
+            </div>
+          </div>
+          <div
+            *ngIf="submitted && error == 7"
+            class="invalid-feedback">
+            Bibliográfia kötelező!
+          </div>
+          <div class="form-group mb-3">
+            <label for="title"><h5>Szükséges ismeretek</h5></label>
+            <div
+              [ngClass]="{
+                'border border-danger': submitted && error == 8
+              }">
+              <ckeditor
+                [editor]="Editor"
+                name="necessaryKnowledge"
+                [(ngModel)]="diploma.necessaryKnowledge"
+                data=""></ckeditor>
+            </div>
+            <div
+              *ngIf="submitted && error == 8"
+              class="invalid-feedback">
+              Szükséges ismeretek kötelező!
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="title"><h5>Más elvárások</h5></label>
+            <div
+              [ngClass]="{
+                'border border-danger': submitted && error == 9
+              }">
+              <ckeditor
+                [editor]="Editor"
+                name="differentExpectations"
+                [(ngModel)]="diploma.differentExpectations"
+                data=""></ckeditor>
+            </div>
+          </div>
+          <div
+            *ngIf="submitted && error == 9"
+            class="invalid-feedback">
+            Más elvárások kötelező!
+          </div>
+          <div class="form-group mb-3">
+            <label for="abstract">PDF Abstract</label>
+            <input
+              type="file"
+              id="pdfFiles"
+              name="pdfFiles"
+              class="form-control"
+              (change)="onFileChange($event)"
+              accept=".pdf"
+              required
+              [ngClass]="{
+                'is-invalid': submitted && error == 10
+              }" />
+            <div
+              *ngIf="submitted && error == 10"
+              class="invalid-feedback">
+              Please select at least one PDF file.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-end">
+        <div class="col-3 d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary">
+            Create Diploma
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

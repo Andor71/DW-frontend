@@ -1,0 +1,215 @@
+<div class="content-wrapper p-0" *ngIf="!isLoading">
+  <div class="content-body p-0">
+    <div class="row justify-content-between">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header border-0">
+            <div class="row align-items-center justify-content-center">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-6">
+                    <h4>Elérhető diplomák</h4>
+                  </div>
+                  <div class="col-6">
+                    <div class="row">
+                      <div class="col">
+                        <div class="position-relative mb-3 search-form">
+                          <input
+                            type="text"
+                            class="form-control form-control-lg bg-light border-light"
+                            placeholder="Search here.."
+                          />
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <button
+                          type="submit"
+                          class="btn btn-primary btn-lg waves-effect waves-light"
+                        >
+                          <i class="mdi mdi-magnify me-1"></i> Search
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-lg-12" *ngFor="let diploma of diplomas">
+                <div class="card border">
+                  <div class="card-body">
+                    <div class="d-sm-flex">
+                      <div class="flex-shrink-0"></div>
+                      <div class="flex-grow-1 ms-sm-4 mt-3 mt-sm-0">
+                        <h5>
+                          <a routerLink="../diploma/{{ diploma.diplomaId }}">
+                            {{ diploma.title }}
+                          </a>
+                        </h5>
+                        <ul class="list-inline mb-2">
+                          <li class="list-inline-item">
+                            <span
+                              *ngFor="
+                                let keyword of diploma.keywords.split(',')
+                              "
+                              class="badge text-bg-light me-2"
+                            >
+                              {{ keyword }}</span
+                            >
+                          </li>
+                        </ul>
+
+                        <ul class="list-inline mb-0">
+                          <li class="list-inline-item">
+                            <i
+                              class="ri-contacts-fill text-success align-middle me-1 custome-size-icon"
+                            ></i>
+                            {{ diploma.teacher.lastName }}
+                            {{ diploma.teacher.firstName }}
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--end card-->
+              </div>
+              <!--end col-->
+            </div>
+            <div class="mt-4">
+              <ul
+                class="pagination pagination-separated justify-content-center mb-0"
+              >
+                <li class="page-item disabled">
+                  <a href="javascript:void(0);" class="page-link"
+                    ><i class="mdi mdi-chevron-left"></i
+                  ></a>
+                </li>
+                <li class="page-item active">
+                  <a href="javascript:void(0);" class="page-link">1</a>
+                </li>
+                <li class="page-item">
+                  <a href="javascript:void(0);" class="page-link">2</a>
+                </li>
+                <li class="page-item">
+                  <a href="javascript:void(0);" class="page-link">3</a>
+                </li>
+                <li class="page-item">
+                  <a href="javascript:void(0);" class="page-link">4</a>
+                </li>
+                <li class="page-item">
+                  <a href="javascript:void(0);" class="page-link">5</a>
+                </li>
+                <li class="page-item">
+                  <a href="javascript:void(0);" class="page-link"
+                    ><i class="mdi mdi-chevron-right"></i
+                  ></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="row">
+          <div class="col-12 card">
+            <div class="card-header d-flex justify-content-between">
+              <h4 class="mb-0">Jelentkezett Diplomák</h4>
+              <span class="">
+                <h4
+                  class="mb-0"
+                  [ngClass]="{
+                    'text-success': appliedDiplomas.length == 3,
+                    'text-danger': appliedDiplomas.length == 0,
+                    'text-warning':
+                      appliedDiplomas.length == 1 || appliedDiplomas.length == 2
+                  }"
+                >
+                  {{ appliedDiplomas.length }}/3
+                </h4></span
+              >
+            </div>
+
+            <div class="row justify-content-center">
+              <!-- <div class="row justify-content-center"> -->
+              <div *ngIf="appliedDiplomas.length == 0" class="col-7">
+                <img src="assets/images/illustrations/no-applied.svg" alt="" />
+                <h4 class="text-center text-danger no-wrap">
+                  Még nem jelentkeztél diplomára!
+                </h4>
+              </div>
+              <!-- </div> -->
+
+              <div
+                *ngIf="appliedDiplomas.length != 0"
+                class="col-lg-12 col-12"
+                [sortablejs]="appliedDiplomas"
+                [sortablejsOptions]="options"
+              >
+                <!--  -->
+                <div
+                  class="card border custom-hover"
+                  *ngFor="let diploma of appliedDiplomas; let i = index"
+                  style="cursor: pointer"
+                >
+                  <div class="card-body row justify-content-between">
+                    <div class="col-1">
+                      <h4>{{ i + 1 }}.</h4>
+                    </div>
+                    <div class="d-sm-flex col-11">
+                      <div class="flex-grow-1 ms-sm-4 mt-3 mt-sm-0">
+                        <h5>
+                          <a href="javascript:void(0);">
+                            {{ (diploma.title | slice : 0 : 35) + "..." }}
+                          </a>
+                        </h5>
+                        <ul class="list-inline mb-2">
+                          <li class="list-inline-item">
+                            <span
+                              *ngFor="
+                                let keyword of diploma.keywords.split(',')
+                              "
+                              class="badge text-bg-light me-2"
+                            >
+                              {{ keyword }}</span
+                            >
+                          </li>
+                        </ul>
+
+                        <ul class="d-flex justify-content-between mb-0 p-0">
+                          <li class="list-inline-item">
+                            <i
+                              class="ri-contacts-fill text-success align-middle me-1 custome-size-icon ps-0"
+                            ></i>
+                            {{ diploma.teacher.lastName }}
+                            {{ diploma.teacher.firstName }}
+                          </li>
+                          <button
+                            class="btn btn-primary"
+                            routerLink="../diploma/{{ diploma.diplomaId }}"
+                          >
+                            Információ
+                          </button>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-9">
+            <img
+              src="assets/images/illustrations/diplomas-applied.svg"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
