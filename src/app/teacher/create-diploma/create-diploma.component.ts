@@ -16,6 +16,8 @@ import { PeriodService } from 'src/core/services/period.service';
 import { UsersService } from 'src/core/services/user.service';
 import { YearService } from 'src/core/services/year.service';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import Swal from 'sweetalert2';
+import { PeriodEnums } from 'src/core/enums/periode.enums';
 
 @Component({
   selector: 'app-create-diploma',
@@ -34,17 +36,27 @@ export class CreatDiplomaComponent implements OnInit {
   public newDiploma: DiplomaDto = new DiplomaDto();
   public activeStudents: Array<UserDto> = new Array<UserDto>();
   public selectedUserId: number;
-  public selectedMajorId: number;
-  public selectedCityIds: string[];
+  public selectedMajorIds: Array<number> = new Array<number>();
+  public selectedTeacherIds: Array<number> = new Array<number>();
   public keywords = [];
   public customKeywords: Array<string> = new Array<string>();
   public keyword: string = '';
   public yearDto: YearDto = new YearDto();
   public periodDto: PeriodDto = new PeriodDto();
   public allPeriods: Array<PeriodDto> = new Array<PeriodDto>();
+  public allTeachers: Array<UserDto> = new Array<UserDto>();
+  public preconditionStartOfEntring: Boolean;
+  public preconditionEndOFEntering: Boolean;
 
   //Helper
-  public majors: Array<{ id: number; name: string }>;
+  public teachers: Array<{ id: number; name: string }> = new Array<{
+    id: number;
+    name: string;
+  }>();
+  public majors: Array<{ id: number; name: string }> = new Array<{
+    id: number;
+    name: string;
+  }>();
   public newPDFs: any;
   public visibility = false;
   public isLoaded = false;
@@ -64,7 +76,21 @@ export class CreatDiplomaComponent implements OnInit {
 
   createMajors() {
     this.allPeriods.forEach((x) => {
-      this.majors.push();
+      let tempMajor = {
+        id: x.major.majorId,
+        name: x.major.programme,
+      };
+      this.majors.push(tempMajor);
+    });
+  }
+
+  createTeachers(teachers: Array<UserDto>) {
+    teachers.forEach((x) => {
+      let tempTeacher = {
+        id: x.id,
+        name: x.firstName + ' ' + x.lastName,
+      };
+      this.teachers.push(tempTeacher);
     });
   }
 
@@ -73,18 +99,36 @@ export class CreatDiplomaComponent implements OnInit {
       this.usersService.getAllActive(),
       this.yearService.getCurrent(),
       this.periodService.getAllActive(),
+      this.usersService.getAllTeachers(),
+      this.usersService.checkPreconditions(
+        PeriodEnums.START_OF_ENTERING_TOPICS
+      ),
+      this.usersService.checkPreconditions(
+        PeriodEnums.END_OF_ENTERING_TOPICS
+      ),
     ]).subscribe(
-      ([activeStudents, yearDto, periodDtos]) => {
+      ([
+        activeStudents,
+        yearDto,
+        periodDtos,
+        teachers,
+        preconditionStartOfEntring,
+        preconditionEndOFEntering,
+      ]) => {
+        this.preconditionStartOfEntring = preconditionStartOfEntring;
+        this.preconditionEndOFEntering = preconditionEndOFEntering;
         this.activeStudents = activeStudents;
         this.activeStudents.map(
           (x) =>
             (x.infoName =
               x.firstName + ' ' + x.lastName + ' ' + x.email)
         );
-
         this.yearDto = yearDto;
         this.allPeriods = periodDtos;
-
+        this.allTeachers = teachers;
+        this.createMajors();
+        this.createTeachers(teachers);
+        this.preconditionsAlert();
         this.isLoaded = true;
       },
       (error) => {
@@ -99,6 +143,25 @@ export class CreatDiplomaComponent implements OnInit {
     this.loadData();
   }
 
+  preconditionsAlert() {
+    if (!this.preconditionStartOfEntring) {
+      Swal.fire({
+        title: 'Korai feltöltés',
+        text: 'Még nincs minden szaknak meghatárzva a diploma időszak, lehetéses hogy pár szaknak nem lesz képes diplomát kiírni!',
+        icon: 'warning',
+        confirmButtonText: 'OK!',
+      });
+    }
+    if (!this.preconditionEndOFEntering) {
+      Swal.fire({
+        title: 'Lejárt a kiírási időszak',
+        text: 'Lejárt a diploma kiírási időszak, lehetséges hogy már csak a második elosztásban lesz jelentkező!',
+        icon: 'warning',
+        confirmButtonText: 'OK!',
+      });
+    }
+  }
+
   onFileChange(event): void {
     this.newPDFs = event.target.files;
     if (this.newPDFs && this.newPDFs[0]) {
@@ -111,7 +174,10 @@ export class CreatDiplomaComponent implements OnInit {
   }
 
   validate() {
-    if (this.selectedMajorId === undefined) {
+    if (
+      this.selectedMajorIds === undefined ||
+      this.selectedMajorIds.length === 0
+    ) {
       this.error = 1;
       return;
     }
@@ -159,7 +225,7 @@ export class CreatDiplomaComponent implements OnInit {
   create() {
     this.submitted = true;
 
-    this.validate();
+    // this.validate();
 
     if (this.error !== 0) {
       return;
@@ -177,10 +243,18 @@ export class CreatDiplomaComponent implements OnInit {
     this.keyword = this.keyword.substring(0, this.keyword.length - 1);
 
     this.newDiploma.keywords = this.keyword;
-    let period = this.allPeriods.filter(
-      (x) => x.major.majorId == this.selectedMajorId
-    )[0];
-    this.newDiploma.period = period;
+
+    let periods = this.allPeriods.filter((x) =>
+      this.selectedMajorIds.includes(x.major.majorId)
+    );
+
+    this.newDiploma.periods = periods;
+
+    let teachers = this.allTeachers.filter((x) =>
+      this.selectedTeacherIds.includes(x.id)
+    );
+
+    this.newDiploma.teachers = teachers;
 
     if (this.visibility) {
       this.newDiploma.student = this.activeStudents.filter(

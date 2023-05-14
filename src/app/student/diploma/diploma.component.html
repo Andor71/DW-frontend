@@ -6,8 +6,7 @@
           src="assets/images/small/img-1.jpg"
           alt=""
           style=""
-          class="profile-wid-img"
-        />
+          class="profile-wid-img" />
       </div>
     </div>
     <div class="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
@@ -31,20 +30,22 @@
                 <p class="fs-14 mb-0">Állapot</p>
               </div>
             </div>
-            <div class="col-lg-8 col-4">
+            <div
+              class="col-lg-8 col-4"
+              *ngIf="diploma.stage === 'Terv'">
               <div class="p-2 d-flex flex-column align-items-center">
                 <div
-                  class="form-check form-switch form-switch-lg form-switch-success"
-                >
+                  class="form-check form-switch form-switch-lg form-switch-success">
                   <input
                     type="checkbox"
                     class="form-check-input"
                     id="customSwitchsizelg"
                     (change)="assigneToDiploma(diploma.diplomaId)"
-                    [checked]="tempApplied"
-                  />
+                    [checked]="tempApplied" />
                 </div>
-                <label class="form-check-label" for="customSwitchsizelg">
+                <label
+                  class="form-check-label"
+                  for="customSwitchsizelg">
                   <p class="fs-14 mb-0">Jelentkezek!</p>
                 </label>
               </div>
@@ -63,11 +64,15 @@
               #customNav="ngbNav"
               [activeId]="1"
               class="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1"
-              role="tablist"
-            >
+              role="tablist">
               <li [ngbNavItem]="1" class="nav-item">
-                <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
-                  <i class="ri-airplay-fill d-inline-block d-md-none"></i>
+                <a
+                  ngbNavLink
+                  class="nav-link"
+                  data-bs-toggle="tab"
+                  role="tab">
+                  <i
+                    class="ri-airplay-fill d-inline-block d-md-none"></i>
                   <span class="d-none d-md-inline-block"
                     >Diploma Információk</span
                   >
@@ -75,17 +80,33 @@
                 <ng-template ngbNavContent>
                   <div class="row">
                     <div class="col-xxl-2">
+                      <div
+                        class="card"
+                        *ngIf="diploma.stage === 'Terv'">
+                        <div
+                          class="card-body d-flex justify-content-center flex-column align-items-center">
+                          <h5 class="card-title mb-1">
+                            Szakoknak hirdetve
+                          </h5>
+                          <div
+                            class="d-flex flex-wrap gap-2 fs-15 flex-row">
+                            <span
+                              *ngFor="let period of diploma.periods"
+                              class="badge text-bg-primary mt-2">
+                              {{ period.major.programme }}</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+
                       <div class="card">
                         <div
-                          class="card-body d-flex justify-content-center flex-column align-items-center"
-                        >
+                          class="card-body d-flex justify-content-center flex-column align-items-center">
                           <h5 class="card-title mb-1">Abstract</h5>
                           <h4
-                            class="mb-0 d-flex align-items-center flex-column"
-                          >
+                            class="mb-0 d-flex align-items-center flex-column">
                             <i
-                              class="ri-file-2-fill me-1 text-danger display-4 pdf-icon"
-                            ></i>
+                              class="ri-file-2-fill me-1 text-danger display-4 pdf-icon"></i>
                             <p class="text-muted custome-size">
                               {{ diploma.abstractName }}
                             </p>
@@ -94,74 +115,387 @@
                       </div>
 
                       <div class="card">
-                        <div class="card-body">
+                        <div
+                          class="card-body"
+                          *ngIf="
+                            currentUser.role === 'student' ||
+                            currentUser === null
+                          ">
                           <h5 class="card-title mb-3">
                             Diploma Vezető Infromációk
                           </h5>
                           <div class="table-responsive">
-                            <table class="table table-borderless mb-0">
-                              <tbody>
+                            <table
+                              class="table table-borderless mb-0">
+                              <tbody
+                                *ngFor="
+                                  let teacher of diploma.teachers
+                                ">
                                 <tr>
-                                  <th class="ps-0" scope="row">Név :</th>
+                                  <th class="ps-0" scope="row">
+                                    Név :
+                                  </th>
                                   <td class="text-muted">
-                                    {{ diploma.teacher.lastName }}
-                                    {{ diploma.teacher.firstName }}
+                                    {{ teacher.lastName }}
+                                    {{ teacher.firstName }}
                                   </td>
                                 </tr>
                                 <tr>
-                                  <th class="ps-0" scope="row">E-mail :</th>
+                                  <th class="ps-0" scope="row">
+                                    E-mail :
+                                  </th>
                                   <td class="text-muted">
-                                    {{ diploma.teacher.email }}
+                                    {{ teacher.email }}
                                   </td>
                                 </tr>
                               </tbody>
                             </table>
                           </div>
                         </div>
+                        <ng-container
+                          *ngIf="diploma.student !== null">
+                          <div
+                            class="card-body"
+                            *ngIf="
+                              currentUser.role === 'teacher' ||
+                              currentUser.role === 'departmenthead'
+                            ">
+                            <h5 class="card-title mb-3">
+                              Diák Infromációk
+                            </h5>
+                            <div class="table-responsive">
+                              <table
+                                class="table table-borderless mb-0">
+                                <tbody>
+                                  <tr>
+                                    <th class="ps-0" scope="row">
+                                      Név :
+                                    </th>
+                                    <td class="text-muted">
+                                      {{ diploma.student.lastName }}
+                                      {{ diploma.student.firstName }}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th class="ps-0" scope="row">
+                                      E-mail :
+                                    </th>
+                                    <td class="text-muted">
+                                      {{ diploma.student.email }}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </ng-container>
+                        <!-- end card body -->
                       </div>
+                      <!-- end card -->
 
                       <div class="card">
                         <div class="card-body">
                           <h5 class="card-title mb-4">Kulcsszavak</h5>
-                          <div class="d-flex flex-wrap gap-2 fs-15 flex-row">
+                          <div
+                            class="d-flex flex-wrap gap-2 fs-15 flex-row">
                             <span
                               *ngFor="
-                                let keyword of diploma.keywords.split(',')
+                                let keyword of diploma.keywords.split(
+                                  ','
+                                )
                               "
-                              class="badge text-bg-light"
-                            >
+                              class="badge text-bg-light">
                               {{ keyword }}</span
                             >
                           </div>
                         </div>
+                        <!-- end card body -->
                       </div>
-                    </div>
-
-                    <div class="col-xxl-10">
                       <div class="card">
-                        <div class="card-body">
-                          <h5 class="card-title mb-3">Jelenkezett Diákok</h5>
-                          <div class="row">
-                            <div class="col-12">
-                              <h4 class="text-muted">
-                                Még nincs jelentkezett diák!
-                              </h4>
-                            </div>
-                          </div>
+                        <div
+                          class="card-header align-items-center d-flex">
+                          <h4 class="card-title mb-0 me-2">
+                            Szükséges ismeretek
+                          </h4>
                         </div>
+                        <div class="card-body">
+                          <p
+                            [innerHtml]="
+                              diploma.necessaryKnowledge
+                            "></p>
+                        </div>
+                        <!-- end card body -->
                       </div>
+                      <!-- end card -->
 
+                      <!--end card-->
+                    </div>
+                    <!--end col-->
+                    <div class="col-xxl-6">
                       <div class="row">
                         <div class="col-lg-12">
                           <div class="card">
-                            <div class="card-header align-items-center d-flex">
-                              <h4 class="card-title mb-0 me-2">Leiárs</h4>
+                            <div
+                              class="card-header align-items-center d-flex">
+                              <h4 class="card-title mb-0 me-2">
+                                Leiárs
+                              </h4>
                             </div>
                             <div class="card-body">
-                              <p>{{ diploma.description }}</p>
+                              <p
+                                [innerHtml]="diploma.description"></p>
                             </div>
                           </div>
                         </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="card">
+                            <div
+                              class="card-header align-items-center d-flex">
+                              <h4 class="card-title mb-0 me-2">
+                                Más elvárások
+                              </h4>
+                            </div>
+                            <div class="card-body">
+                              <p
+                                [innerHtml]="
+                                  diploma.differentExpectations
+                                "></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-xxl-4">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="card">
+                            <div
+                              class="card-header align-items-center d-flex">
+                              <h4 class="card-title mb-0 me-2">
+                                Kivitelezés részletei
+                              </h4>
+                            </div>
+                            <div class="card-body">
+                              <p [innerHtml]="diploma.details"></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="card">
+                            <div
+                              class="card-header align-items-center d-flex">
+                              <h4 class="card-title mb-0 me-2">
+                                Bibliográfia
+                              </h4>
+                            </div>
+                            <div class="card-body">
+                              <p
+                                [innerHtml]="
+                                  diploma.bibliography
+                                "></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+              <li
+                [ngbNavItem]="2"
+                class="nav-item"
+                *ngIf="
+                  diploma.stage === 'Folyamatban' ||
+                  diploma.stage === 'Elkészítve'
+                ">
+                <a
+                  ngbNavLink
+                  class="nav-link"
+                  data-bs-toggle="tab"
+                  role="tab">
+                  <i
+                    class="ri-airplay-fill d-inline-block d-md-none"></i>
+                  <span class="d-none d-md-inline-block"
+                    >Beszélgetés</span
+                  >
+                </a>
+                <ng-template ngbNavContent>
+                  <div class="row justify-content-center">
+                    <form
+                      class="col-8 d-flex justify-content-center align-items-center">
+                      <div class="input-group me-3">
+                        <textarea
+                          class="form-control"
+                          placeholder="Irj egy üzenetet.."
+                          id="message"
+                          name="message"
+                          [(ngModel)]="commentDto.message"
+                          aria-label="With textarea"
+                          rows="2"></textarea>
+                      </div>
+                      <button
+                        class="btn btn-success"
+                        (click)="sendComment()">
+                        Komment elküldése
+                      </button>
+                    </form>
+                  </div>
+                  <div class="row justify-content-center">
+                    <div
+                      class="col-7 mt-5"
+                      *ngIf="comments.length == 0">
+                      <img
+                        src="assets\images\illustrations\no-comment.svg"
+                        alt="No comment" />
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="timeline">
+                        <div
+                          *ngFor="let comment of comments"
+                          class="timeline-item"
+                          [ngClass]="{
+                            left:
+                              comment.user.role === 'teacher' ||
+                              comment.user.role === 'departmenthead',
+                            right: comment.user.role === 'student'
+                          }">
+                          <i class="icon ri-stack-line"></i>
+                          <div class="date">
+                            {{ comment.date | date : 'medium' }}
+                          </div>
+                          <div class="content pt-2 ps-1">
+                            <div class="d-flex">
+                              <div class="flex-grow-1 ms-3">
+                                <div
+                                  class="d-flex justify-content-between align-items-center">
+                                  <div
+                                    class="d-flex align-items-center">
+                                    <i
+                                      *ngIf="!comment.viewed"
+                                      class="h4 ri-fire-fill me-3 text-danger"></i>
+                                    <h5 class="fs-15">
+                                      {{ comment.user.lastName }}
+                                      {{ comment.user.firstName }}
+                                    </h5>
+                                  </div>
+
+                                  <span class="btn-light btn">
+                                    <i
+                                      (click)="
+                                        deleteComment(
+                                          comment.commentId
+                                        )
+                                      "
+                                      class="h4 delete-icon ri-delete-bin-2-line text-danger"></i>
+                                  </span>
+                                </div>
+                                <p class="text-muted mb-2">
+                                  {{ comment.message }}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!--end row-->
+                </ng-template>
+              </li>
+              <li
+                [ngbNavItem]="4"
+                class="nav-item"
+                *ngIf="diploma.stage === 'Folyamatban'">
+                <a
+                  ngbNavLink
+                  class="nav-link"
+                  data-bs-toggle="tab"
+                  role="tab">
+                  <i
+                    class="ri-airplay-fill d-inline-block d-md-none"></i>
+                  <span class="d-none d-md-inline-block"
+                    >Dokumentum feltöltés</span
+                  >
+                </a>
+                <ng-template ngbNavContent>
+                  <div class="row">
+                    <div class="col-xxl-4">
+                      <div class="card">
+                        <img
+                          src="assets\images\illustrations\document-upload.svg"
+                          alt="" />
+                      </div>
+                    </div>
+                    <div class="col-xxl-8">
+                      <div class="row">
+                        <div class="col-xxl-6">
+                          <div class="card">
+                            <div class="card-body">
+                              <h5 class="card-title mb-1">
+                                Határidő
+                              </h5>
+                              <div
+                                class="mb-0 d-flex align-items-center flex-column">
+                                <h4 class="text-danger">
+                                  2020.03.23
+                                </h4>
+                                <h3 class="text-danger">20:32:23</h3>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-xxl-6">
+                          <div class="card">
+                            <div class="card-body">
+                              <h5 class="card-title mb-1">
+                                Feltöltési információk
+                              </h5>
+                              <div
+                                class="mb-0 d-flex align-items-center flex-column">
+                                <P
+                                  >Lorem ipsum dolor sit amet
+                                  consectetur adipisicing elit.
+                                  Quaerat, cumque labore non ullam rem
+                                  neque eaque, dignissimos quasi ab
+                                  soluta doloribus quo incidunt
+                                  corporis harum.</P
+                                >
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="card">
+                            <div class="card-header">
+                              <h4 class="card-title mb-0">
+                                Dropzone
+                              </h4>
+                            </div>
+                            <!-- end card header -->
+
+                            <div class="card-body">
+                              <p class="text-muted">
+                                DropzoneJS is an open source library
+                                that provides drag’n’drop file uploads
+                                with image previews.
+                              </p>
+
+                              <!-- <dropzone
+                                class="dropzone_sec"></dropzone> -->
+                              <!-- end dropzon-preview -->
+                            </div>
+                            <!-- end card body -->
+                          </div>
+                          <!-- end card -->
+                        </div>
+                        <!-- end col -->
                       </div>
                     </div>
                   </div>

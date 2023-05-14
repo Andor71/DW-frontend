@@ -1,4 +1,4 @@
-import { MajorDto } from "./major.model";
+import { MajorDto } from './major.model';
 
 export class UserDto {
   id: number;
@@ -8,7 +8,8 @@ export class UserDto {
   role: string;
   active: boolean;
   email: string;
-  majorDto:MajorDto
+  majorDto: MajorDto;
   infoName?: string;
   media?: number;
+  status?: string;
 }

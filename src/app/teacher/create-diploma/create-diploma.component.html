@@ -34,34 +34,42 @@
       <div class="row">
         <div class="col-6">
           <div class="form-group mb-2">
-            <label for="major"><h5>Szak</h5></label>
-            <select
-              id="major"
-              class="form-select mb-1"
-              [(ngModel)]="selectedMajorId"
-              name="major"
-              [ngClass]="{
-                'is-invalid': submitted && error == 1
-              }">
-              <ng-container *ngFor="let item of allPeriods">
-                <option [ngValue]="item.periodId">
-                  {{ item.major.programme }}
-                </option>
-              </ng-container>
-            </select>
-            <!-- <ng-select
-              [items]="allPeriods"
-              bindLabel="major.name"
-              bindValue="periodId"
+            <label for="major"><h5>További tanárok</h5></label>
+
+            <ng-select
+              [items]="teachers"
+              bindLabel="name"
+              bindValue="id"
+              name="teachers"
               [multiple]="true"
-              placeholder="Select cities"
-              [(ngModel)]="selectedCityIds">
-            </ng-select> -->
+              placeholder="Válaszd ki a célszakokat"
+              [(ngModel)]="selectedTeacherIds">
+            </ng-select>
 
             <div
               *ngIf="submitted && error == 1"
               class="invalid-feedback">
-              Major is required!
+              Szak kötelező!
+            </div>
+          </div>
+
+          <div class="form-group mb-2">
+            <label for="major"><h5>Szak</h5></label>
+
+            <ng-select
+              [items]="majors"
+              bindLabel="name"
+              bindValue="id"
+              name="majors"
+              [multiple]="true"
+              placeholder="Válaszd ki a célszakokat"
+              [(ngModel)]="selectedMajorIds">
+            </ng-select>
+
+            <div
+              *ngIf="submitted && error == 1"
+              class="invalid-feedback">
+              Szak kötelező!
             </div>
           </div>
 

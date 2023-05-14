@@ -1,14 +1,18 @@
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { ToastrModule } from "ngx-toastr";
-import { AuthGuard } from "src/core/auth/auth.guards";
-import { ErrorInterceptor } from "src/core/auth/error.interceptor";
-import { JwtInterceptor } from "src/core/auth/jwt.interceptor";
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { LayoutsModule } from "./layouts/layouts.module";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import {
+  HttpClientModule,
+  HTTP_INTERCEPTORS,
+} from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { ToastrModule } from 'ngx-toastr';
+import { AuthGuard } from 'src/core/auth/auth.guards';
+import { ErrorInterceptor } from 'src/core/auth/error.interceptor';
+import { JwtInterceptor } from 'src/core/auth/jwt.interceptor';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { LayoutsModule } from './layouts/layouts.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PreloaderComponent } from './shared/preloader/preloader.component';
 // import { SortablejsModule } from "angular-sortablejs";
 
 @NgModule({
@@ -16,12 +20,11 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,
-    // SortablejsModule,
     LayoutsModule,
     BrowserModule,
     HttpClientModule,
     ToastrModule.forRoot({
-      positionClass: "toast-bottom-right",
+      positionClass: 'toast-bottom-right',
     }),
   ],
   providers: [

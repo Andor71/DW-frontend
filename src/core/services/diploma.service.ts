@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { DiplomaDto } from '../models/diploma.model';
 import { UserDto } from '../models/user.model';
+import { FinishedSDMappingDto } from '../models/finishedSDMapping.model';
 
 @Injectable({
   providedIn: 'root',
@@ -51,9 +52,9 @@ export class DiplomaService {
     );
   }
 
-  getAllVisible(): Observable<Array<DiplomaDto>> {
+  getAllVisibleForGivenMajor(): Observable<Array<DiplomaDto>> {
     return this.http.get<Array<DiplomaDto>>(
-      `${environment.apiUrl}/diploma/get-all-visible-diplomas`
+      `${environment.apiUrl}/diploma/get-all-visible-diplomas-for-given-major`
     );
   }
 
@@ -63,14 +64,21 @@ export class DiplomaService {
       {}
     );
   }
-  getAllAppliedDiplomas(): Observable<Array<DiplomaDto>> {
+  getAllAppliedDiplomasForApproving(): Observable<
+    Array<FinishedSDMappingDto>
+  > {
+    return this.http.get<Array<FinishedSDMappingDto>>(
+      `${environment.apiUrl}/diploma/get-all-applied-diplomas-for-approving`
+    );
+  }
+  getAllAppliedDiplomasForStudent(): Observable<Array<DiplomaDto>> {
     return this.http.get<Array<DiplomaDto>>(
-      `${environment.apiUrl}/diploma/get-all-applied-diplomas`
+      `${environment.apiUrl}/diploma/get-all-applied-diplomas-for-student`
     );
   }
   getByIdForStudent(id: number): Observable<DiplomaDto> {
     return this.http.get<DiplomaDto>(
-      `${environment.apiUrl}/diploma/getbyIDForStudent/` + id
+      `${environment.apiUrl}/diploma/get-by-id-for-student/` + id
     );
   }
   changeAppliedPriority(
@@ -89,9 +97,10 @@ export class DiplomaService {
     );
   }
 
-  enableAllStudentDiploma() {
+  enableAllStudentDiploma(allAccepted: boolean) {
     return this.http.post<any>(
-      `${environment.apiUrl}/diploma/enable-all-student-diploma`,
+      `${environment.apiUrl}/diploma/enable-all-student-diploma/` +
+        allAccepted,
       {}
     );
   }
@@ -102,6 +111,17 @@ export class DiplomaService {
     return this.http.get<any>(
       `${environment.apiUrl}/diploma/${diplomaID}/get-all-students-applied`,
       {}
+    );
+  }
+  sortStudentsForDiploma(): Observable<void> {
+    return this.http.patch<void>(
+      `${environment.apiUrl}/diploma/sort-students-for-diploma`,
+      {}
+    );
+  }
+  getCurrentDiploma(): Observable<DiplomaDto> {
+    return this.http.get<DiplomaDto>(
+      `${environment.apiUrl}/diploma/get-current-diploma`
     );
   }
 }

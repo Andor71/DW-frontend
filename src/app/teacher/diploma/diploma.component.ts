@@ -18,7 +18,7 @@ import Swal from 'sweetalert2';
 })
 export class DiplomaComponent implements OnInit {
   //Data
-  public myDiploma: DiplomaDto = new DiplomaDto();
+  public diploma: DiplomaDto = new DiplomaDto();
   public id: number;
 
   public comments: Array<CommentDto> = new Array<CommentDto>();
@@ -61,7 +61,7 @@ export class DiplomaComponent implements OnInit {
       this.diplomaService.getAllStudentsApplied(this.id),
     ]).subscribe(
       ([myDiploma, comments, appliedStudents]) => {
-        this.myDiploma = myDiploma;
+        this.diploma = myDiploma;
 
         this.comments = comments.sort((a, b) => {
           return <any>new Date(b.date) - <any>new Date(a.date);
@@ -71,7 +71,7 @@ export class DiplomaComponent implements OnInit {
           return a.media > b.media ? 1 : -1;
         });
 
-        console.log(this.appliedStudents);
+        console.log(this.diploma);
 
         this.isLoading = false;
       },
@@ -128,7 +128,7 @@ export class DiplomaComponent implements OnInit {
       return;
     }
 
-    this.commentDto.diploma = this.myDiploma;
+    this.commentDto.diploma = this.diploma;
     this.commentDto.user = this.currentUser;
 
     this.commetService

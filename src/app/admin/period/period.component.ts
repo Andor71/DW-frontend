@@ -55,12 +55,15 @@ export class PeriodComponent implements OnInit {
         next: (periodDto) => {
           this.periodDto = periodDto;
           for (const field in this.periodDto) {
-            if (field !== 'periodId') {
-              if (field !== 'major') {
-                periodDto[field] = new Date(periodDto[field]);
-              }
+            if (
+              field !== 'periodId' &&
+              field !== 'major' &&
+              field !== 'year'
+            ) {
+              periodDto[field] = new Date(periodDto[field]);
             }
           }
+          console.log(periodDto);
 
           this.initForm();
           this.isLoading = false;
@@ -93,7 +96,7 @@ export class PeriodComponent implements OnInit {
     return this.updatePeriodForm.controls;
   }
 
-  create() {
+  update() {
     this.submitted = true;
 
     if (this.updatePeriodForm.invalid) {
@@ -103,21 +106,21 @@ export class PeriodComponent implements OnInit {
     if (!this.validetDates()) {
       return;
     }
-
     this.loading = true;
     this.periodService
-      .create(this.periodDto)
+      .update(this.periodDto)
       .pipe(first())
       .subscribe({
         next: (periodDto) => {
           this.router.navigate(['admin/periods']);
           this.toastrService.toastrSuccess(
-            'Period has been created succesfully!'
+            'Időszak frissítve sikeresen!'
           );
         },
         error: (e) => {
-          this.toastrService.toastrError('Error creating a period!');
-          console.log(e);
+          this.toastrService.toastrError(
+            'Hiba lépett fel az időszak frissítése közben!'
+          );
         },
       });
   }
@@ -141,7 +144,10 @@ export class PeriodComponent implements OnInit {
         this.periodDto.firstTopicAdvertisementEnd,
         Validators.required,
       ],
-      firstAllocation: [this.periodDto.firstAllocation, Validators.required],
+      firstAllocation: [
+        this.periodDto.firstAllocation,
+        Validators.required,
+      ],
       secondTopicAdvertisement: [
         this.periodDto.secondTopicAdvertisement,
         Validators.required,
@@ -150,21 +156,23 @@ export class PeriodComponent implements OnInit {
         this.periodDto.secondTopicAdvertisementEnd,
         Validators.required,
       ],
-      secondAllocation: [this.periodDto.secondAllocation, Validators.required],
+      secondAllocation: [
+        this.periodDto.secondAllocation,
+        Validators.required,
+      ],
       implementationOfTopics: [
         this.periodDto.implementationOfTopics,
         Validators.required,
       ],
-      documentumUpload: [this.periodDto.documentumUpload, Validators.required],
-      diplomaDefend: [this.periodDto.diplomaDefend, Validators.required],
+      documentumUpload: [
+        this.periodDto.documentumUpload,
+        Validators.required,
+      ],
+      diplomaDefend: [
+        this.periodDto.diplomaDefend,
+        Validators.required,
+      ],
     });
-    console.log(
-      this.datePipe.transform(
-        this.periodDto.startOfEnteringTopics,
-        'yyyy.MM.dd'
-      )
-    );
-    console.log(new Date(this.periodDto.startOfEnteringTopics));
 
     this.updatePeriodForm.get('major').disable();
     this.submitted = false;

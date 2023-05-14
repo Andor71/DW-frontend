@@ -1,0 +1,181 @@
+<div class="content-wrapper p-0">
+  <app-preloader *ngIf="isLoading"></app-preloader>
+  <div class="content-body p-0" *ngIf="!isLoading">
+    <div class="profile-foreground position-relative mx-n4 mt-n4">
+      <div class="profile-wid-bg">
+        <img
+          src="assets/images/small/img-1.jpg"
+          alt=""
+          style=""
+          class="profile-wid-img" />
+      </div>
+    </div>
+    <div class="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
+      <div class="row g-4">
+        <div class="col">
+          <div class="p-2">
+            <h3 class="text-white mb-1 d-flex align-items-center">
+              <i class="ri-user-add-fill me-1 display-3"></i>
+              Tanulók hozzáadása
+            </h3>
+            <h5>Szak: {{ period.major.programme }}</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row p-3 card flex-row justify-content-between">
+      <div class="col-4">
+        <div class="row">
+          <div class="col-12 card">
+            <div class="card-body">
+              <h2>Tanulók feltöltése</h2>
+              <form (ngSubmit)="upload()" #fileUploadForm="ngForm">
+                <div class="form-group">
+                  <label for="csvfiles">CSV dokument</label>
+                  <div
+                    class="d-flex justify-content-between align-items-center">
+                    <input
+                      type="file"
+                      id="csvfiles"
+                      name="csvfiles"
+                      class="form-control me-3"
+                      accept=".csv"
+                      multiple
+                      (change)="onFileChange($event)"
+                      required />
+                    <div class="invalid-feedback">
+                      Kérlek válassz ki minimum 1 CSV-t.
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                      Feltöltés
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col-12 card">
+            <div class="card-body">
+              <h2>Tanuló hozzáadása</h2>
+              <form
+                (ngSubmit)="upload()"
+                #fileUploadForm="ngForm"
+                [formGroup]="createStudentForm">
+                <div class="form-group">
+                  <label for="firstName"><h5>Csalás név</h5></label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    formControlName="firstName"
+                    class="form-control mb-2"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.firstName.errors
+                    }" />
+                </div>
+                <div class="form-group">
+                  <label for="lastName"><h5>Vezeték név</h5></label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    formControlName="lastName"
+                    class="form-control mb-2"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.lastName.errors
+                    }" />
+                </div>
+                <div class="form-group">
+                  <label for="email"><h5>Email</h5></label>
+                  <input
+                    type="email"
+                    id="email"
+                    formControlName="email"
+                    class="form-control mb-4"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.email.errors
+                    }" />
+                </div>
+                <div class="form-group">
+                  <label for="media"><h5>Media</h5></label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="media"
+                    formControlName="media"
+                    class="form-control mb-4"
+                    [ngClass]="{
+                      'is-invalid': submitted && f.media.errors
+                    }" />
+                </div>
+                <div class="d-flex justify-content-end">
+                  <button type="submit" class="btn btn-primary">
+                    Hozzáadás
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-7 card p-3">
+        <div class="row align-items-center justify-content-center">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-8">
+                <h4>Tanulók</h4>
+
+                <h5>Tanulok Száma: {{ students.length }}</h5>
+              </div>
+              <div class="col-4">
+                <div class="row">
+                  <div class="col">
+                    <div
+                      class="d-flex align-items-center justify-content-end pr-1 pb-1 pb-md-0">
+                      <input
+                        name="searchValue"
+                        type="search"
+                        class="form-control ml-25"
+                        (keyup)="filterUpdate($event)"
+                        (search)="filterUpdate($event)"
+                        placeholder="Keress tanulót" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <ng-container *ngFor="let student of students">
+            <div class="card my-2">
+              <div class="card-header p-4 py-2">
+                <div
+                  class="row align-items-center justify-content-between">
+                  <div class="col-auto me-5">
+                    <h4 class="m-0">
+                      {{ student.firstName }} {{ student.lastName }}
+                    </h4>
+                  </div>
+                  <div
+                    class="col-3 d-flex justify-content-center align-items-center">
+                    <button
+                      type="button"
+                      class="btn btn-icon btn-outline-warning me-2">
+                      <i class="ri-edit-box-line"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-icon btn-outline-danger"
+                      (click)="deleteStudent(student.id)">
+                      <i class="ri-delete-bin-line"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

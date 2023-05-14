@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "cypress:open": "cypress open"
   },
   "private": true,
   "dependencies": {
@@ -52,6 +53,8 @@
     "bootstrap": "^5.2.3",
     "browserslist": "^4.21.4",
     "chart.js": "^4.1.2",
+    "cypress-file-upload": "^5.0.8",
+    "cypress-slow-down": "^1.2.1",
     "echarts": "^5.4.1",
     "firebase": "^9.15.0",
     "flatpickr": "^4.6.13",
@@ -108,6 +111,7 @@
     "@types/node": "^18.11.18",
     "@types/quill": "^2.0.10",
     "@types/sortablejs": "^1.15.1",
+    "cypress": "^12.9.0",
     "karma-jasmine": "^5.1.0",
     "karma-jasmine-html-reporter": "^2.0.0",
     "typescript": "~4.8.4"

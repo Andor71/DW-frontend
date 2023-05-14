@@ -16,7 +16,7 @@
           <div class="p-2">
             <h3 class="text-white mb-1 d-flex align-items-center">
               <i class="ri-book-2-fill me-1 display-3"></i>
-              {{ myDiploma.title }}
+              {{ diploma.title }}
             </h3>
           </div>
         </div>
@@ -26,19 +26,9 @@
             <div class="col-lg-4 col-4">
               <div class="p-2">
                 <h4 class="text-white mb-1">
-                  {{ myDiploma.stage | uppercase }}
+                  {{ diploma.stage | uppercase }}
                 </h4>
                 <p class="fs-14 mb-0">Állapot</p>
-              </div>
-            </div>
-            <div class="col-lg-8 col-4">
-              <div class="p-2">
-                <h4
-                  *ngIf="myDiploma.visibility == 0"
-                  class="text-white mb-1">
-                  Nem látható
-                </h4>
-                <p class="fs-14 mb-0">Dilpoma láthatósága</p>
               </div>
             </div>
           </div>
@@ -77,13 +67,30 @@
                       <div class="card">
                         <div
                           class="card-body d-flex justify-content-center flex-column align-items-center">
+                          <h5 class="card-title mb-1">
+                            Szakoknak hirdetve
+                          </h5>
+                          <div
+                            class="d-flex flex-wrap gap-2 fs-15 flex-row">
+                            <span
+                              *ngFor="let period of diploma.periods"
+                              class="badge text-bg-primary mt-2">
+                              {{ period.major.programme }}</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="card">
+                        <div
+                          class="card-body d-flex justify-content-center flex-column align-items-center">
                           <h5 class="card-title mb-1">Abstract</h5>
                           <h4
                             class="mb-0 d-flex align-items-center flex-column">
                             <i
                               class="ri-file-2-fill me-1 text-danger display-4 pdf-icon"></i>
                             <p class="text-muted custome-size">
-                              {{ myDiploma.abstractName }}
+                              {{ diploma.abstractName }}
                             </p>
                           </h4>
                         </div>
@@ -97,14 +104,17 @@
                           <div class="table-responsive">
                             <table
                               class="table table-borderless mb-0">
-                              <tbody>
+                              <tbody
+                                *ngFor="
+                                  let teacher of diploma.teachers
+                                ">
                                 <tr>
                                   <th class="ps-0" scope="row">
                                     Név :
                                   </th>
                                   <td class="text-muted">
-                                    {{ myDiploma.teacher.lastName }}
-                                    {{ myDiploma.teacher.firstName }}
+                                    {{ teacher.lastName }}
+                                    {{ teacher.firstName }}
                                   </td>
                                 </tr>
                                 <tr>
@@ -112,13 +122,50 @@
                                     E-mail :
                                   </th>
                                   <td class="text-muted">
-                                    {{ myDiploma.teacher.email }}
+                                    {{ teacher.email }}
                                   </td>
                                 </tr>
                               </tbody>
                             </table>
                           </div>
                         </div>
+                        <ng-container
+                          *ngIf="diploma.student !== null">
+                          <div
+                            class="card-body"
+                            *ngIf="
+                              currentUser.role === 'teacher' ||
+                              currentUser.role === 'departmenthead'
+                            ">
+                            <h5 class="card-title mb-3">
+                              Diák Infromációk
+                            </h5>
+                            <div class="table-responsive">
+                              <table
+                                class="table table-borderless mb-0">
+                                <tbody>
+                                  <tr>
+                                    <th class="ps-0" scope="row">
+                                      Név :
+                                    </th>
+                                    <td class="text-muted">
+                                      {{ diploma.student.lastName }}
+                                      {{ diploma.student.firstName }}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th class="ps-0" scope="row">
+                                      E-mail :
+                                    </th>
+                                    <td class="text-muted">
+                                      {{ diploma.student.email }}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </ng-container>
                         <!-- end card body -->
                       </div>
                       <!-- end card -->
@@ -130,7 +177,7 @@
                             class="d-flex flex-wrap gap-2 fs-15 flex-row">
                             <span
                               *ngFor="
-                                let keyword of myDiploma.keywords.split(
+                                let keyword of diploma.keywords.split(
                                   ','
                                 )
                               "
@@ -151,7 +198,7 @@
                         <div class="card-body">
                           <p
                             [innerHtml]="
-                              myDiploma.necessaryKnowledge
+                              diploma.necessaryKnowledge
                             "></p>
                         </div>
                         <!-- end card body -->
@@ -173,9 +220,7 @@
                             </div>
                             <div class="card-body">
                               <p
-                                [innerHtml]="
-                                  myDiploma.description
-                                "></p>
+                                [innerHtml]="diploma.description"></p>
                             </div>
                           </div>
                         </div>
@@ -192,7 +237,7 @@
                             <div class="card-body">
                               <p
                                 [innerHtml]="
-                                  myDiploma.differentExpectations
+                                  diploma.differentExpectations
                                 "></p>
                             </div>
                           </div>
@@ -210,7 +255,7 @@
                               </h4>
                             </div>
                             <div class="card-body">
-                              <p [innerHtml]="myDiploma.details"></p>
+                              <p [innerHtml]="diploma.details"></p>
                             </div>
                           </div>
                         </div>
@@ -227,7 +272,7 @@
                             <div class="card-body">
                               <p
                                 [innerHtml]="
-                                  myDiploma.bibliography
+                                  diploma.bibliography
                                 "></p>
                             </div>
                           </div>
@@ -237,7 +282,13 @@
                   </div>
                 </ng-template>
               </li>
-              <li [ngbNavItem]="2" class="nav-item">
+              <li
+                [ngbNavItem]="2"
+                class="nav-item"
+                *ngIf="
+                  diploma.stage === 'Folyamatban' ||
+                  diploma.stage === 'Elkészítve'
+                ">
                 <a
                   ngbNavLink
                   class="nav-link"
@@ -285,9 +336,9 @@
                           class="timeline-item"
                           [ngClass]="{
                             left:
-                              currentUser.role === 'teacher' ||
-                              currentUser.role === 'departmenthead',
-                            right: currentUser.role === 'student'
+                              comment.user.role === 'teacher' ||
+                              comment.user.role === 'departmenthead',
+                            right: comment.user.role === 'student'
                           }">
                           <i class="icon ri-stack-line"></i>
                           <div class="date">
@@ -333,7 +384,10 @@
                   <!--end row-->
                 </ng-template>
               </li>
-              <li [ngbNavItem]="3" class="nav-item">
+              <li
+                [ngbNavItem]="3"
+                class="nav-item"
+                *ngIf="diploma.stage === 'Terv'">
                 <a
                   ngbNavLink
                   class="nav-link"
@@ -358,6 +412,17 @@
                                 <th scope="col">Media</th>
                               </tr>
                             </thead>
+                            <tbody
+                              *ngIf="appliedStudents.length === 0">
+                              <tr>
+                                <td></td>
+                                <td>
+                                  <span class="h4 text-center">
+                                    Még nincs jelentkezett diák!</span
+                                  >
+                                </td>
+                              </tr>
+                            </tbody>
                             <tbody
                               *ngFor="let student of appliedStudents">
                               <tr>
@@ -384,7 +449,10 @@
                   </div>
                 </ng-template>
               </li>
-              <li [ngbNavItem]="4" class="nav-item">
+              <li
+                [ngbNavItem]="4"
+                class="nav-item"
+                *ngIf="diploma.stage === 'Folyamatban'">
                 <a
                   ngbNavLink
                   class="nav-link"

@@ -4,11 +4,9 @@
       <div class="row justify-content-center p-0">
         <div class="col-10 col-sm-12 mb-5">
           <div
-            class="card m-0 px-5 py-4 d-flex align-items-center justify-content-center"
-          >
+            class="card m-0 px-5 py-4 d-flex align-items-center justify-content-center">
             <div
-              class="d-flex align-items-center flex-column justify-content-start"
-            >
+              class="d-flex align-items-center flex-column justify-content-start">
               <h3 class="m-0 mb-2 me-3">Updated Period</h3>
               <h5 class="m-0 mr-2">Tanév 2022-2023</h5>
             </div>
@@ -16,13 +14,14 @@
             <div class="col-md-10">
               <form
                 action="javascript:"
-                (ngSubmit)="create()"
+                (ngSubmit)="update()"
                 [formGroup]="updatePeriodForm"
-                autocomplete="off"
-              >
+                autocomplete="off">
                 <div class="row">
                   <div class="form-group col-md-5 mb-5">
-                    <label class="mb-1" for="major"><h5>Major</h5></label>
+                    <label class="mb-1" for="major"
+                      ><h5>Major</h5></label
+                    >
                     <input
                       [disabled]="true"
                       id="major"
@@ -32,13 +31,11 @@
                       [ngClass]="{
                         'is-invalid': submitted && f.major.errors
                       }"
-                      [(ngModel)]="periodDto.major.programme"
-                    />
+                      [(ngModel)]="periodDto.major.programme" />
                   </div>
                   <div
                     *ngIf="submitted && f.major.errors"
-                    class="invalid-feedback"
-                  >
+                    class="invalid-feedback">
                     <div *ngIf="f.major.errors.required">
                       Major is required !
                     </div>
@@ -47,7 +44,7 @@
                 <div class="row justify-content-around">
                   <div class="form-group col-md-5">
                     <label for="startOfEnteringTopics"
-                      ><h5>Start of entering topics</h5></label
+                      ><h5>Diplomák létrehozásának kezdete</h5></label
                     >
                     <input
                       type="text"
@@ -62,20 +59,21 @@
                       [minDate]="periodDto.startOfEnteringTopics"
                       Placeholder="Start of entering topics"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
-                      [(ngModel)]="periodDto.startOfEnteringTopics"
-                    />
+                      [(ngModel)]="periodDto.startOfEnteringTopics" />
                   </div>
                   <div
-                    *ngIf="submitted && f.startOfEnteringTopics.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="f.startOfEnteringTopics.errors.required">
-                      Start Of Entering Topics is required!
+                    *ngIf="
+                      submitted && f.startOfEnteringTopics.errors
+                    "
+                    class="invalid-feedback">
+                    <div
+                      *ngIf="f.startOfEnteringTopics.errors.required">
+                      Diplomák létrehozásának kezdete kötelező!
                     </div>
                   </div>
                   <div class="form-group col-md-5">
                     <label for="endOfEnteringTopics"
-                      ><h5>End of entering topics</h5></label
+                      ><h5>Diplomák létrehozásának vége!</h5></label
                     >
                     <input
                       type="text"
@@ -83,29 +81,31 @@
                       id="endOfEnteringTopics"
                       formControlName="endOfEnteringTopics"
                       [ngClass]="{
-                        'is-invalid': submitted && f.endOfEnteringTopics.errors
+                        'is-invalid':
+                          submitted && f.endOfEnteringTopics.errors
                       }"
                       bsDatepicker
                       name="startOfEnteringTopics"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
                       [minDate]="periodDto.startOfEnteringTopics"
                       Placeholder="End of entering topics"
-                      [(ngModel)]="periodDto.endOfEnteringTopics"
-                    />
+                      [(ngModel)]="periodDto.endOfEnteringTopics" />
                   </div>
                   <div
                     *ngIf="submitted && f.endOfEnteringTopics.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="f.endOfEnteringTopics.errors.required">
-                      End Of Entering Topics is required!
+                    class="invalid-feedback">
+                    <div
+                      *ngIf="f.endOfEnteringTopics.errors.required">
+                      Diplomák létrehozásának vége kötelező!
                     </div>
                   </div>
                 </div>
                 <div class="row justify-content-around">
                   <div class="form-group col-md-5">
                     <label for="firstTopicAdvertisement"
-                      ><h5>First Topic Advertisement</h5></label
+                      ><h5>
+                        Diplomák meghirdetésének kezdete első kör
+                      </h5></label
                     >
                     <input
                       formControlName="firstTopicAdvertisement"
@@ -114,27 +114,34 @@
                       id="firstTopicAdvertisement"
                       [ngClass]="{
                         'is-invalid':
-                          submitted && f.firstTopicAdvertisement.errors
+                          submitted &&
+                          f.firstTopicAdvertisement.errors
                       }"
                       bsDatepicker
                       name="firstTopicAdvertisement"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
                       [minDate]="periodDto.endOfEnteringTopics"
                       Placeholder="First Topic Advertisement"
-                      [(ngModel)]="periodDto.firstTopicAdvertisement"
-                    />
+                      [(ngModel)]="
+                        periodDto.firstTopicAdvertisement
+                      " />
                   </div>
                   <div
-                    *ngIf="submitted && f.firstTopicAdvertisement.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="f.firstTopicAdvertisement.errors.required">
-                      First Topic Advertisement is required!
-                    </div>
+                    *ngIf="
+                      submitted && f.firstTopicAdvertisement.errors
+                    "
+                    class="invalid-feedback">
+                    <div
+                      *ngIf="
+                        f.firstTopicAdvertisement.errors.required
+                      "></div>
                   </div>
                   <div class="form-group col-md-5">
                     <label for="firstTopicAdvertisementEnd"
-                      ><h5>Start date of entering topics</h5></label
+                      ><h5>
+                        Diplomák meghirdetésének kezdete első körének
+                        vége
+                      </h5></label
                     >
                     <input
                       type="text"
@@ -143,29 +150,36 @@
                       id="firstTopicAdvertisementEnd"
                       [ngClass]="{
                         'is-invalid':
-                          submitted && f.firstTopicAdvertisementEnd.errors
+                          submitted &&
+                          f.firstTopicAdvertisementEnd.errors
                       }"
                       bsDatepicker
                       name="firstTopicAdvertisement"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
                       [minDate]="periodDto.firstTopicAdvertisement"
                       Placeholder="First Topic Advertisement"
-                      [(ngModel)]="periodDto.firstTopicAdvertisementEnd"
-                    />
+                      [(ngModel)]="
+                        periodDto.firstTopicAdvertisementEnd
+                      " />
                   </div>
                   <div
-                    *ngIf="submitted && f.firstTopicAdvertisementEnd.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="f.firstTopicAdvertisementEnd.errors.required">
-                      First Topic Advertisement End is required!
+                    *ngIf="
+                      submitted && f.firstTopicAdvertisementEnd.errors
+                    "
+                    class="invalid-feedback">
+                    <div
+                      *ngIf="
+                        f.firstTopicAdvertisementEnd.errors.required
+                      ">
+                      Diplomák meghirdetésének első körének vége
+                      kötelező!
                     </div>
                   </div>
                 </div>
                 <div class="row justify-content-around">
                   <div class="form-group col-md-5">
                     <label for="firstAllocation"
-                      ><h5>First Allocation</h5></label
+                      ><h5>Első leosztás</h5></label
                     >
                     <input
                       type="text"
@@ -173,27 +187,28 @@
                       id="firstAllocation"
                       formControlName="firstAllocation"
                       [ngClass]="{
-                        'is-invalid': submitted && f.firstAllocation.errors
+                        'is-invalid':
+                          submitted && f.firstAllocation.errors
                       }"
                       bsDatepicker
                       name="firstAllocation"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
                       [minDate]="periodDto.firstTopicAdvertisementEnd"
                       Placeholder="First Allocation"
-                      [(ngModel)]="periodDto.firstAllocation"
-                    />
+                      [(ngModel)]="periodDto.firstAllocation" />
                   </div>
                   <div
                     *ngIf="submitted && f.firstAllocation.errors"
-                    class="invalid-feedback"
-                  >
+                    class="invalid-feedback">
                     <div *ngIf="f.firstAllocation.errors.required">
-                      First Allocation is required!
+                      Első leosztás kötelező!
                     </div>
                   </div>
                   <div class="form-group col-md-5">
                     <label for="secondTopicAdvertisement"
-                      ><h5>Second Topic Advertisement</h5></label
+                      ><h5>
+                        Diplomák meghirdetésének kezdete második kör
+                      </h5></label
                     >
                     <input
                       type="text"
@@ -202,29 +217,38 @@
                       id="secondTopicAdvertisement"
                       [ngClass]="{
                         'is-invalid':
-                          submitted && f.secondTopicAdvertisement.errors
+                          submitted &&
+                          f.secondTopicAdvertisement.errors
                       }"
                       bsDatepicker
                       name="secondTopicAdvertisement"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
                       [minDate]="periodDto.firstAllocation"
                       Placeholder="Second Topic Advertisement"
-                      [(ngModel)]="periodDto.secondTopicAdvertisement"
-                    />
+                      [(ngModel)]="
+                        periodDto.secondTopicAdvertisement
+                      " />
                   </div>
                   <div
-                    *ngIf="submitted && f.secondTopicAdvertisement.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="f.secondTopicAdvertisement.errors.required">
-                      Second Topic Advertisement is required!
+                    *ngIf="
+                      submitted && f.secondTopicAdvertisement.errors
+                    "
+                    class="invalid-feedback">
+                    <div
+                      *ngIf="
+                        f.secondTopicAdvertisement.errors.required
+                      ">
+                      Diplomák meghirdetésének kezdete második kör
+                      kötelező
                     </div>
                   </div>
                 </div>
                 <div class="row justify-content-around">
                   <div class="form-group col-md-5">
                     <label for="secondTopicAdvertisementEnd"
-                      ><h5>Second Topic Advertisement End</h5></label
+                      ><h5>
+                        Diplomák meghirdetésének első körének vége
+                      </h5></label
                     >
                     <input
                       type="text"
@@ -233,27 +257,35 @@
                       formControlName="secondTopicAdvertisementEnd"
                       [ngClass]="{
                         'is-invalid':
-                          submitted && f.secondTopicAdvertisementEnd.errors
+                          submitted &&
+                          f.secondTopicAdvertisementEnd.errors
                       }"
                       bsDatepicker
                       name="secondTopicAdvertisementEnd"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
                       [minDate]="periodDto.secondTopicAdvertisement"
                       Placeholder="Second Topic Advertisement"
-                      [(ngModel)]="periodDto.secondTopicAdvertisementEnd"
-                    />
+                      [(ngModel)]="
+                        periodDto.secondTopicAdvertisementEnd
+                      " />
                   </div>
                   <div
-                    *ngIf="submitted && f.secondTopicAdvertisementEnd.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="f.secondTopicAdvertisementEnd.errors.required">
-                      Second Topic Advertisement End is required!
+                    *ngIf="
+                      submitted &&
+                      f.secondTopicAdvertisementEnd.errors
+                    "
+                    class="invalid-feedback">
+                    <div
+                      *ngIf="
+                        f.secondTopicAdvertisementEnd.errors.required
+                      ">
+                      Diplomák meghirdetésének első körének vége
+                      köetelező
                     </div>
                   </div>
                   <div class="form-group col-md-5">
                     <label for="secondAllocation"
-                      ><h5>Second Topic Advertisement End</h5></label
+                      ><h5>Második leosztás</h5></label
                     >
                     <input
                       type="text"
@@ -261,29 +293,30 @@
                       id="secondAllocation"
                       formControlName="secondAllocation"
                       [ngClass]="{
-                        'is-invalid': submitted && f.secondAllocation.errors
+                        'is-invalid':
+                          submitted && f.secondAllocation.errors
                       }"
                       bsDatepicker
                       name="secondAllocation"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
-                      [minDate]="periodDto.secondTopicAdvertisementEnd"
+                      [minDate]="
+                        periodDto.secondTopicAdvertisementEnd
+                      "
                       Placeholder="Second Allocation"
-                      [(ngModel)]="periodDto.secondAllocation"
-                    />
+                      [(ngModel)]="periodDto.secondAllocation" />
                   </div>
                   <div
-                    *ngIf="submitted && f.secondTopicAdvertisementEnd.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="f.secondTopicAdvertisementEnd.errors.required">
-                      Second allocation is required!
+                    *ngIf="submitted && f.secondAllocation.errors"
+                    class="invalid-feedback">
+                    <div *ngIf="f.secondAllocation.errors.required">
+                      Második leosztás kötelező
                     </div>
                   </div>
                 </div>
                 <div class="row justify-content-around">
                   <div class="form-group col-md-5">
                     <label for="implementationOfTopics"
-                      ><h5>Implementation Of Topics</h5></label
+                      ><h5>Diplomák kidolgozása</h5></label
                     >
                     <input
                       type="text"
@@ -299,20 +332,25 @@
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
                       [minDate]="periodDto.secondAllocation"
                       Placeholder="Implementation Of Topics"
-                      [(ngModel)]="periodDto.implementationOfTopics"
-                    />
+                      [(ngModel)]="
+                        periodDto.implementationOfTopics
+                      " />
                   </div>
                   <div
-                    *ngIf="submitted && f.implementationOfTopics.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="f.implementationOfTopics.errors.required">
-                      Implementation Of Topic is required!
+                    *ngIf="
+                      submitted && f.implementationOfTopics.errors
+                    "
+                    class="invalid-feedback">
+                    <div
+                      *ngIf="
+                        f.implementationOfTopics.errors.required
+                      ">
+                      Diplomák kidolgozása kötelező
                     </div>
                   </div>
                   <div class="form-group col-md-5">
                     <label for="documentumUpload"
-                      ><h5>Documentum Upload Of Topics</h5></label
+                      ><h5>Dokumnetumok feltöltése</h5></label
                     >
                     <input
                       type="text"
@@ -320,55 +358,55 @@
                       id="documentumUpload"
                       formControlName="documentumUpload"
                       [ngClass]="{
-                        'is-invalid': submitted && f.documentumUpload.errors
+                        'is-invalid':
+                          submitted && f.documentumUpload.errors
                       }"
                       bsDatepicker
                       name="documentumUpload"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
                       [minDate]="periodDto.implementationOfTopics"
                       Placeholder="Documentum Upload Of Topics"
-                      [(ngModel)]="periodDto.documentumUpload"
-                    />
+                      [(ngModel)]="periodDto.documentumUpload" />
                   </div>
                   <div
                     *ngIf="submitted && f.documentumUpload.errors"
-                    class="invalid-feedback"
-                  >
+                    class="invalid-feedback">
                     <div *ngIf="f.documentumUpload.errors.required">
-                      Documentum Upload Of Topic is required!
+                      Dokumentumok feltöltése kötelező!
                     </div>
                   </div>
                 </div>
                 <div class="row justify-content-center flex-row">
                   <div class="form-group col-md-5">
-                    <label for="diplomaDefend"><h5>Diploma Defend</h5></label>
+                    <label for="diplomaDefend"
+                      ><h5>Diploma megvédése</h5></label
+                    >
                     <input
                       type="text"
                       class="form-control mb-5"
                       id="diplomaDefend"
                       formControlName="diplomaDefend"
                       [ngClass]="{
-                        'is-invalid': submitted && f.diplomaDefend.errors
+                        'is-invalid':
+                          submitted && f.diplomaDefend.errors
                       }"
                       bsDatepicker
                       name="diplomaDefend"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
                       [minDate]="periodDto.documentumUpload"
                       Placeholder="Documentum Upload Of Topics"
-                      [(ngModel)]="periodDto.diplomaDefend"
-                    />
+                      [(ngModel)]="periodDto.diplomaDefend" />
                   </div>
                   <div
                     *ngIf="submitted && f.diplomaDefend.errors"
-                    class="invalid-feedback"
-                  >
+                    class="invalid-feedback">
                     <div *ngIf="f.diplomaDefend.errors.required">
-                      Diploma Defend is required!
+                      Diploma megvédése kötelező
                     </div>
                   </div>
                   <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary">
-                      Update Period
+                      Időszak frissítése!
                     </button>
                   </div>
                 </div>

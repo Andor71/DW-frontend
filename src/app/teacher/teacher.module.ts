@@ -13,6 +13,8 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { PreloaderComponent } from '../shared/preloader/preloader.component';
+import { SharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
   {
@@ -56,6 +58,7 @@ const routes: Routes = [
     DiplomaAppliesComponent,
   ],
   imports: [
+    SharedModule,
     NgSelectModule,
     CommonModule,
     RouterModule.forChild(routes),

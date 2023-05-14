@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { layerGroup } from 'leaflet';
 import { first, forkJoin, Subscription } from 'rxjs';
-import { DocumentResponseDto } from 'src/core/models/document.model';
+import {
+  DocumentDto,
+  DocumentResponseDto,
+} from 'src/core/models/document.model';
 import { AllMajorDto } from 'src/core/models/major.model';
 import {
   PeriodDto,
@@ -34,6 +37,7 @@ export class PeriodsComponent implements OnInit {
   public formData: FormData = new FormData();
   public numberOfFiles: number;
   public activeIds: number;
+  public isfilesSelected: Boolean = false;
 
   constructor(
     private periodService: PeriodService,
@@ -123,16 +127,18 @@ export class PeriodsComponent implements OnInit {
           .pipe(first())
           .subscribe({
             next: (id) => {
-              // this.majors.forEach((x) => {
-              //   x.majors = x.majors.filter((y) => y.majorId != id);
-              // });
+              this.periodsByYear.forEach((x) => {
+                x.periods = x.periods.filter((y) => {
+                  y.major.majorId != id;
+                });
+              });
               this.toastrService.toastrSuccess(
-                'Period deleted successfully!'
+                'Időszak sikeresen törölve!'
               );
             },
             error: (e) => {
               this.toastrService.toastrError(
-                'An error occurred while deleting the Period!'
+                'Hiba lépett fel az időszak törlése közben!'
               );
             },
           });
@@ -167,6 +173,7 @@ export class PeriodsComponent implements OnInit {
   onFileChange(event): void {
     let newPDFs = event.target.files;
     if (newPDFs && newPDFs[0]) {
+      this.isfilesSelected = true;
       this.numberOfFiles = newPDFs.length;
       for (let i = 0; i < this.numberOfFiles; i++) {
         this.formData.append('files', newPDFs[i]);
@@ -175,6 +182,12 @@ export class PeriodsComponent implements OnInit {
   }
 
   upLoad(yearID: number) {
+    if (!this.isfilesSelected) {
+      this.toastrService.toastrWarning(
+        'Elöször válassz ki dokumentumot a feltöltéshez!'
+      );
+      return;
+    }
     this.documentService
       .upLoadFile(this.formData, yearID)
       .pipe(first())
@@ -188,14 +201,33 @@ export class PeriodsComponent implements OnInit {
             }
           });
           this.toastrService.toastrSuccess(
-            'File has been uploaded successfully!'
+            'Dokumentum sikeresen feltöltve!'
           );
         },
         error: (e) => {
           this.toastrService.toastrError(
-            'Error with uploading a file!'
+            'Hiba lépett fel a dokumentum feltöltése közben!'
           );
         },
+      });
+  }
+
+  downloadFile(documentID: number) {
+    this.documentService
+      .downloadFile(documentID)
+      .subscribe((response) => {
+        let doc: DocumentDto;
+        this.documents.filter((x) => {
+          doc = x.documents.filter(
+            (y) => y.documentId == documentID
+          )[0];
+        });
+        let fileName = doc.name;
+        let blob: Blob = response.body;
+        let a = document.createElement('a');
+        a.download = fileName;
+        a.href = window.URL.createObjectURL(blob);
+        a.click();
       });
   }
 }

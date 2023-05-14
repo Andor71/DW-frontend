@@ -15,6 +15,13 @@ export class PeriodService {
       periodDto
     );
   }
+
+  update(periodDto: PeriodDto): Observable<PeriodDto> {
+    return this.http.patch<PeriodDto>(
+      `${environment.apiUrl}/period/update`,
+      periodDto
+    );
+  }
   getAllActive(): Observable<Array<PeriodDto>> {
     return this.http.get<Array<PeriodDto>>(
       `${environment.apiUrl}/period/get-all`
@@ -23,6 +30,11 @@ export class PeriodService {
   delete(id: number): Observable<number> {
     return this.http.delete<number>(
       `${environment.apiUrl}/period/delete/` + id
+    );
+  }
+  getById(id: number): Observable<PeriodDto> {
+    return this.http.get<PeriodDto>(
+      `${environment.apiUrl}/period/` + id
     );
   }
   getbyMajorID(id: number): Observable<PeriodDto> {

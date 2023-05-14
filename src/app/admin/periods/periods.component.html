@@ -154,7 +154,9 @@
                             </div>
                             <ng-container
                               *ngFor="let period of period.periods">
-                              <div class="card my-2">
+                              <div
+                                class="card my-2"
+                                id="{{ period.major.programme }}">
                                 <div class="card-header p-4 py-2">
                                   <div
                                     class="row align-items-center justify-content-between">
@@ -165,6 +167,16 @@
                                     </div>
                                     <div
                                       class="col-3 d-flex justify-content-center align-items-center">
+                                      <button
+                                        type="button"
+                                        class="btn btn-icon btn-outline-warning me-2"
+                                        [routerLink]="[
+                                          '/admin/add-students/' +
+                                            period.periodId
+                                        ]">
+                                        <i
+                                          class="ri-user-add-fill"></i>
+                                      </button>
                                       <button
                                         type="button"
                                         class="btn btn-icon btn-outline-warning me-2"
@@ -230,13 +242,15 @@
                                       <button
                                         type="submit"
                                         class="btn btn-primary">
-                                        Feltötés
+                                        Feltöltés
                                       </button>
                                     </div>
                                   </div>
                                 </form>
                               </div>
-                              <div class="card-body p-3">
+                              <div
+                                class="card-body p-3"
+                                id="document-list">
                                 <h5>Feltöltött dokumentumok</h5>
                                 <ng-container
                                   *ngFor="let document of documents">
@@ -270,10 +284,16 @@
                                           let doc of document.documents
                                         ">
                                         <div
+                                          id="{{ doc.name }}"
                                           class="card p-2 d-flex justify-content-between align-items-center flex-row mb-2">
                                           <div
                                             class="d-flex justify-content-left align-items-center flex-row">
                                             <i
+                                              (click)="
+                                                downloadFile(
+                                                  doc.documentId
+                                                )
+                                              "
                                               class="ri-file-2-fill me-1 text-danger display-4 pdf-icon"></i>
                                             <h4 class="mb-0">
                                               {{

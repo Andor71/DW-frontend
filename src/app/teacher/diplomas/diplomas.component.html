@@ -1,8 +1,7 @@
 <div class="content-wrapper p-0" *ngIf="!isLoading">
   <div class="content-body p-0">
     <div
-      class="row justify-content-between align-items-center card flex-row p-3"
-    >
+      class="row justify-content-between align-items-center card flex-row p-3">
       <div class="card-header row">
         <div class="col">
           <h3>Diplomáim</h3>
@@ -10,8 +9,7 @@
         <div class="col-auto">
           <button
             [routerLink]="['/teacher/create-diploma']"
-            class="btn btn-primary"
-          >
+            class="btn btn-primary">
             Diploma létrehozása
           </button>
         </div>
@@ -20,59 +18,62 @@
         class="row p-3"
         [ngClass]="{
           'd-flex justify-content-center': myDiplomas.length == 0
-        }"
-      >
+        }">
         <div class="col-5" *ngIf="myDiplomas.length == 0">
-          <img src="assets/images/illustrations/create-diploma.svg" alt="" />
+          <img
+            src="assets/images/illustrations/create-diploma.svg"
+            alt="" />
           <h5 class="text-center text-success">
             Még nincsenek diplomái, hozzon létre !
           </h5>
         </div>
-        <div>
-          <ng-container *ngIf="myDiplomas.length != 0">
-            <h4>Aktiv diplomáim</h4>
-            <ng-container *ngFor="let diploma of myDiplomas">
-              <div class="col-xxl-4 col-lg-6">
-                <div class="card">
-                  <div class="card-header">
-                    <h6 class="card-title mb-0">
-                      {{ diploma.title }}
-                    </h6>
-                  </div>
-                  <div class="card-body">
-                    <h6 class="card-title">Állapot: {{ diploma.stage }}</h6>
-                    <ng-container *ngIf="diploma.taken">
-                      <h6 class="card-title">Tanuló: Pál Andor</h6>
-                      <h6 class="card-title">Szak: Számitástechnika</h6>
+        <ng-container *ngIf="myDiplomas.length != 0">
+          <h4 class="mb-3">Aktiv diplomáim</h4>
+          <ng-container *ngFor="let diploma of myDiplomas">
+            <div class="col-xxl-4">
+              <div
+                class="card card-hover"
+                routerLink="../diploma/{{ diploma.diplomaId }}">
+                <div
+                  class="card-header"
+                  [ngClass]="{
+                    'bg-light': diploma.stage === 'Terv',
+                    'bg-warning': diploma.stage === 'Kivitelezés',
+                    'bg-primary': diploma.stage === 'Elkészítve'
+                  }">
+                  <h6 class="card-title mb-0">
+                    {{ diploma.title }}
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <ng-container *ngIf="diploma.taken">
+                    <h6 class="card-title">Tanuló: Pál Andor</h6>
+                    <h6 class="card-title">Szak: Számitástechnika</h6>
+                  </ng-container>
+                  <ng-container *ngIf="!diploma.taken">
+                    <ng-container *ngIf="diploma.visibility">
+                      <h6 class="card-title">
+                        Látható mindenki számára
+                      </h6>
                     </ng-container>
-                    <ng-container *ngIf="!diploma.taken">
-                      <ng-container *ngIf="diploma.visibility">
-                        <h6 class="card-title">Látható mindenki számára</h6>
-                      </ng-container>
-                      <ng-container *ngIf="!diploma.visibility">
-                        <h6 class="card-title">Diploma elrejtve</h6>
-                      </ng-container>
+                    <ng-container *ngIf="!diploma.visibility">
+                      <h6 class="card-title">Diploma elrejtve</h6>
                     </ng-container>
-                    <p class="card-text mb-0">
-                      Kulcs szavak : mobile, cloud, docker
-                    </p>
-                  </div>
-                  <div class="card-footer">
-                    <a
-                      routerLink="../diploma/{{ diploma.diplomaId }}"
-                      class="link-success float-end"
-                      >További infok
-                      <i
-                        class="ri-arrow-right-s-line align-middle ms-1 lh-1"
-                      ></i
-                    ></a>
-                    <p class="text-muted mb-0">1 days Ago</p>
+                  </ng-container>
+                  <div class="d-flex flex-wrap gap-2 fs-15 flex-row">
+                    <span
+                      *ngFor="
+                        let keyword of diploma.keywords.split(',')
+                      "
+                      class="badge text-bg-light">
+                      {{ keyword }}</span
+                    >
                   </div>
                 </div>
               </div>
-            </ng-container>
+            </div>
           </ng-container>
-        </div>
+        </ng-container>
       </div>
     </div>
   </div>

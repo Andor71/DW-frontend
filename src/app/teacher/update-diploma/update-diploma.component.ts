@@ -42,13 +42,23 @@ export class UpdateDiplomaComponent implements OnInit {
   public selectedStage;
 
   //Helper
+  public majors: Array<{ id: number; name: string }> = new Array<{
+    id: number;
+    name: string;
+  }>();
   public newPDFs: any;
   public visibility = false;
+  public alreadySelected;
   public isLoading = true;
   public formData: FormData = new FormData();
   public loadDataSubscription: Subscription = new Subscription();
+  public selectedMajorIds: Array<number> = new Array<number>();
   public Editor = ClassicEditor;
   addCustomKeyWord = (term) => ({ id: term, keyword: term });
+  addAlreadyMajors = (major) => ({
+    id: major.majorId,
+    name: major.programme,
+  });
 
   constructor(
     private router: Router,
@@ -62,16 +72,31 @@ export class UpdateDiplomaComponent implements OnInit {
   ) {
     this.id = this.route.snapshot.params.id;
   }
+
+  createMajors() {
+    this.allPeriods.forEach((x) => {
+      let tempMajor = {
+        id: x.major.majorId,
+        name: x.major.programme,
+      };
+      this.majors.push(tempMajor);
+    });
+  }
+
   initFields() {
-    this.selectedMajorId = this.diploma.period.major.majorId;
     this.diploma.keywords.split(',').forEach((x) => {
       this.keywords.push(this.addCustomKeyWord(x));
       this.customKeywords.push(x);
     });
+    this.allPeriods.forEach((x) => {
+      this.selectedMajorIds.push(x.major.majorId);
+    });
+
     if (this.diploma.student !== null) {
       this.selectedUserId = this.diploma.student.id;
     }
   }
+
   loadData() {
     this.loadDataSubscription = forkJoin([
       this.usersService.getAllActive(),
@@ -90,7 +115,6 @@ export class UpdateDiplomaComponent implements OnInit {
         this.yearDto = yearDto;
         this.allPeriods = periodDtos;
         this.diploma = diploma;
-
         this.initFields();
 
         this.isLoading = false;
@@ -119,7 +143,10 @@ export class UpdateDiplomaComponent implements OnInit {
   }
 
   validate() {
-    if (this.selectedMajorId === undefined) {
+    if (
+      this.selectedMajorIds === undefined ||
+      this.selectedMajorIds.length === 0
+    ) {
       this.error = 1;
       return;
     }
@@ -131,17 +158,35 @@ export class UpdateDiplomaComponent implements OnInit {
       this.error = 3;
       return;
     }
-    if (this.customKeywords.length < 3) {
+    if (this.diploma.details === undefined) {
       this.error = 4;
       return;
     }
-    if (this.visibility && this.selectedUserId === undefined) {
+    if (this.customKeywords.length < 3) {
       this.error = 5;
       return;
     }
+    if (this.visibility && this.selectedUserId === undefined) {
+      this.error = 6;
+      return;
+    }
+    if (this.diploma.bibliography === undefined) {
+      this.error = 7;
+      return;
+    }
+
+    if (this.diploma.necessaryKnowledge === undefined) {
+      this.error = 8;
+      return;
+    }
+
+    if (this.diploma.differentExpectations === undefined) {
+      this.error = 9;
+      return;
+    }
+
     this.error = 0;
   }
-
   create() {
     this.submitted = true;
 
@@ -163,10 +208,11 @@ export class UpdateDiplomaComponent implements OnInit {
     this.keyword = this.keyword.substring(0, this.keyword.length - 1);
 
     this.diploma.keywords = this.keyword;
-    let period = this.allPeriods.filter(
-      (x) => x.major.majorId == this.selectedMajorId
-    )[0];
-    this.diploma.period = period;
+    let periods = this.allPeriods.filter((x) =>
+      this.selectedMajorIds.includes(x.major.majorId)
+    );
+
+    this.diploma.periods = periods;
 
     if (this.visibility) {
       this.diploma.student = this.activeStudents.filter(

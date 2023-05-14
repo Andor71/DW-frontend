@@ -1,14 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import { ToastrService } from "ngx-toastr";
-import { forkJoin, Subscription } from "rxjs";
-import { DiplomaDto } from "src/core/models/diploma.model";
-import { CustomToastrService } from "src/core/services/CustomToastrService.service";
-import { DiplomaService } from "src/core/services/diploma.service";
+import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import { forkJoin, Subscription } from 'rxjs';
+import { DiplomaDto } from 'src/core/models/diploma.model';
+import { CustomToastrService } from 'src/core/services/CustomToastrService.service';
+import { DiplomaService } from 'src/core/services/diploma.service';
 
 @Component({
-  selector: "app-diplomas",
-  templateUrl: "./diplomas.component.html",
-  styleUrls: ["./diplomas.component.scss"],
+  selector: 'app-diplomas',
+  templateUrl: './diplomas.component.html',
+  styleUrls: ['./diplomas.component.scss'],
 })
 export class DiplomasComponent implements OnInit {
   //Data
@@ -31,13 +31,11 @@ export class DiplomasComponent implements OnInit {
     ]).subscribe(
       ([myDiplomas]) => {
         this.myDiplomas = myDiplomas;
-        console.log(this.myDiplomas);
-
         this.isLoading = false;
       },
       (error) => {
         this.toastrService.toastrError(
-          "An error occurred while loading the content"
+          'An error occurred while loading the content'
         );
       }
     );

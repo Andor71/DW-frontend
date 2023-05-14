@@ -8,6 +8,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PeriodComponent } from './period/period.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { AddStudentsComponent } from './add-students/add-students.component';
+import { PreloaderComponent } from '../shared/preloader/preloader.component';
+import { SharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
   {
@@ -26,6 +29,11 @@ const routes: Routes = [
     data: { animation: 'decommerce' },
   },
   {
+    path: 'add-students/:id',
+    component: AddStudentsComponent,
+    data: { animation: 'decommerce' },
+  },
+  {
     path: '',
     redirectTo: '/admin/periods',
     pathMatch: 'full',
@@ -41,6 +49,7 @@ const routes: Routes = [
     PeriodsComponent,
     CreatePeriodComponent,
     PeriodComponent,
+    AddStudentsComponent,
   ],
   imports: [
     CommonModule,
@@ -49,6 +58,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
+    SharedModule,
   ],
 })
 export class AdminModule {}

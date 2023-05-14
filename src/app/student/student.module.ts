@@ -1,30 +1,31 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { DiplomasComponent } from "./diplomas/diplomas.component";
-import { RouterModule, Routes } from "@angular/router";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { SortablejsModule } from "ngx-sortablejs";
-import { DiplomaComponent } from "./diploma/diploma.component";
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { DiplomasComponent } from './diplomas/diplomas.component';
+import { RouterModule, Routes } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SortablejsModule } from 'ngx-sortablejs';
+import { DiplomaComponent } from './diploma/diploma.component';
+import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
-    path: "diplomas",
+    path: 'diplomas',
     component: DiplomasComponent,
-    data: { animation: "decommerce" },
+    data: { animation: 'decommerce' },
   },
   {
-    path: "diploma/:id",
+    path: 'diploma/:id',
     component: DiplomaComponent,
-    data: { animation: "decommerce" },
+    data: { animation: 'decommerce' },
   },
   {
-    path: "",
-    redirectTo: "/student/diplomas",
-    pathMatch: "full",
+    path: '',
+    redirectTo: '/student/diplomas',
+    pathMatch: 'full',
   },
   {
-    path: "**",
-    redirectTo: "/pages/miscellaneous/error", //Error 404 - Page not found
+    path: '**',
+    redirectTo: '/pages/miscellaneous/error', //Error 404 - Page not found
   },
 ];
 
@@ -34,6 +35,7 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     NgbModule,
+    FormsModule,
     SortablejsModule,
   ],
 })

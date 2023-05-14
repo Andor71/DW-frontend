@@ -58,6 +58,7 @@
                       [ngClass]="{
                         'is-invalid': submitted && f['email'].errors
                       }"
+                      name="email"
                       placeholder="Enter email" />
                     <div
                       *ngIf="submitted && f['email'].errors"
@@ -89,6 +90,7 @@
                         class="form-control pe-5"
                         placeholder="Enter password"
                         id="password-input"
+                        name="password"
                         formControlName="password"
                         [ngClass]="{
                           'is-invalid':

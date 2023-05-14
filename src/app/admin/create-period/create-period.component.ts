@@ -105,7 +105,6 @@ export class CreatePeriodComponent implements OnInit {
       (x) => x.majorId == this.f.major.value
     )[0];
     this.periodDto.year = this.yearDto;
-    console.log(this.periodDto);
 
     this.periodService
       .create(this.periodDto)
