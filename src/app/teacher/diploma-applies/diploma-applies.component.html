@@ -6,8 +6,12 @@
       <div class="card-header row">
         <div class="col">
           <h3>Diploma Jelentkezések</h3>
-          <h2 *ngIf="FIRST_ALOCATION">Első leosztás</h2>
-          <h2 *ngIf="SECOND_ALLOCATION">Második leosztás</h2>
+          <h2 *ngIf="!FIRST_ALLOCATION" class="text-success">
+            Első leosztás
+          </h2>
+          <h2 *ngIf="FIRST_ALLOCATION" class="text-success">
+            Második leosztás
+          </h2>
         </div>
         <div class="col-auto">
           <div
@@ -24,22 +28,37 @@
           </div>
         </div>
       </div>
-      <div
-        class="row p-3"
-        [ngClass]="{
-          'd-flex justify-content-center': FIRST_ALOCATION == false
-        }">
+      <div class="row p-3 justify-content-center">
         <div
-          class="col-5 d-flex flex-column align-items-center"
-          *ngIf="FIRST_ALOCATION == false">
+          class="col-5 d-flex flex-column align-items-center justify-content-center"
+          *ngIf="!FIRST_ALLOCATION && diplomaApplies.length == 0">
           <img src="assets/images/illustrations/sort.svg" alt="" />
           <h5 class="text-center text-success">
-            Még nem járt le a jelentkezési időszak. Jelentkezési
-            időszak után automatikus lelesznek osztva a diákok.
+            Még nem járt le az első jelentkezési időszak.
+          </h5>
+          <h5 class="text-center text-success">
+            Jelentkezési időszak után automatikus lelesznek osztva a
+            diákok.
+          </h5>
+        </div>
+        <div
+          class="col-5 d-flex flex-column align-items-center justify-content-center"
+          *ngIf="
+            FIRST_ALLOCATION &&
+            !SECOND_ALLOCATION &&
+            diplomaApplies.length == 0
+          ">
+          <img src="assets/images/illustrations/sort.svg" alt="" />
+          <h5 class="text-center text-success">
+            Még nem járt le a második jelentkezési időszak.
+          </h5>
+          <h5 class="text-center text-success">
+            Jelentkezési időszak után automatikus lelesznek osztva a
+            diákok.
           </h5>
         </div>
         <div>
-          <ng-container *ngIf="FIRST_ALOCATION">
+          <ng-container>
             <ng-container
               *ngFor="let diplomaapplie of diplomaApplies">
               <div class="card border">
@@ -107,6 +126,13 @@
               </div>
             </ng-container>
           </ng-container>
+          <div class="d-flex justify-content-end">
+            <button
+              class="btn btn-primary"
+              (click)="finalizeApplies()">
+              Véglegesítés
+            </button>
+          </div>
         </div>
       </div>
     </div>

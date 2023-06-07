@@ -47,6 +47,7 @@ export class CreatDiplomaComponent implements OnInit {
   public allTeachers: Array<UserDto> = new Array<UserDto>();
   public preconditionStartOfEntring: Boolean;
   public preconditionEndOFEntering: Boolean;
+  public preconditionSecondAllocation: Boolean;
 
   //Helper
   public teachers: Array<{ id: number; name: string }> = new Array<{
@@ -118,6 +119,7 @@ export class CreatDiplomaComponent implements OnInit {
         this.preconditionStartOfEntring = preconditionStartOfEntring;
         this.preconditionEndOFEntering = preconditionEndOFEntering;
         this.activeStudents = activeStudents;
+
         this.activeStudents.map(
           (x) =>
             (x.infoName =
@@ -152,7 +154,8 @@ export class CreatDiplomaComponent implements OnInit {
         confirmButtonText: 'OK!',
       });
     }
-    if (!this.preconditionEndOFEntering) {
+
+    if (this.preconditionEndOFEntering) {
       Swal.fire({
         title: 'Lejárt a kiírási időszak',
         text: 'Lejárt a diploma kiírási időszak, lehetséges hogy már csak a második elosztásban lesz jelentkező!',

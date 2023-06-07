@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin, Subscription } from 'rxjs';
+import { getDiplomaStage } from 'src/core/helpers/helperFunctions';
 import { DiplomaDto } from 'src/core/models/diploma.model';
 import { CustomToastrService } from 'src/core/services/CustomToastrService.service';
 import { DiplomaService } from 'src/core/services/diploma.service';
@@ -11,6 +12,9 @@ import { DiplomaService } from 'src/core/services/diploma.service';
   styleUrls: ['./diplomas.component.scss'],
 })
 export class DiplomasComponent implements OnInit {
+  //Helper functions
+  getDiplomaStage = getDiplomaStage;
+
   //Data
   public myDiplomas: Array<DiplomaDto> = new Array<DiplomaDto>();
   //Helper

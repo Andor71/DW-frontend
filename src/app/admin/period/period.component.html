@@ -84,6 +84,7 @@
                         'is-invalid':
                           submitted && f.endOfEnteringTopics.errors
                       }"
+                      W
                       bsDatepicker
                       name="startOfEnteringTopics"
                       [bsConfig]="{ dateInputFormat: 'YYYY.MM.DD' }"
@@ -131,10 +132,7 @@
                       submitted && f.firstTopicAdvertisement.errors
                     "
                     class="invalid-feedback">
-                    <div
-                      *ngIf="
-                        f.firstTopicAdvertisement.errors.required
-                      "></div>
+                    Diplomák meghirdetésének első köre kötelező!
                   </div>
                   <div class="form-group col-md-5">
                     <label for="firstTopicAdvertisementEnd"

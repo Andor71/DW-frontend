@@ -1,6 +1,11 @@
 <div class="content-wrapper p-0">
   <app-preloader *ngIf="isLoading"></app-preloader>
-  <div class="content-body p-0" *ngIf="!isLoading">
+  <app-preloader
+    *ngIf="isLoadingCustom"
+    loaderMessage="Hallgatók feltöltése, kérem várjon"></app-preloader>
+  <div
+    class="content-body p-0"
+    *ngIf="!isLoading && !isLoadingCustom">
     <div class="profile-foreground position-relative mx-n4 mt-n4">
       <div class="profile-wid-bg">
         <img
@@ -18,7 +23,9 @@
               <i class="ri-user-add-fill me-1 display-3"></i>
               Tanulók hozzáadása
             </h3>
-            <h5>Szak: {{ period.major.programme }}</h5>
+            <h5 class="text-white">
+              Szak: {{ period.major.programme }}
+            </h5>
           </div>
         </div>
       </div>
@@ -58,15 +65,16 @@
             <div class="card-body">
               <h2>Tanuló hozzáadása</h2>
               <form
-                (ngSubmit)="upload()"
+                (ngSubmit)="createStudent()"
                 #fileUploadForm="ngForm"
                 [formGroup]="createStudentForm">
                 <div class="form-group">
-                  <label for="firstName"><h5>Csalás név</h5></label>
+                  <label for="firstName"><h5>Család név</h5></label>
                   <input
                     type="text"
                     id="firstName"
                     formControlName="firstName"
+                    [(ngModel)]="newStudent.firstName"
                     class="form-control mb-2"
                     [ngClass]="{
                       'is-invalid': submitted && f.firstName.errors
@@ -78,6 +86,7 @@
                     type="text"
                     id="lastName"
                     formControlName="lastName"
+                    [(ngModel)]="newStudent.lastName"
                     class="form-control mb-2"
                     [ngClass]="{
                       'is-invalid': submitted && f.lastName.errors
@@ -88,6 +97,7 @@
                   <input
                     type="email"
                     id="email"
+                    [(ngModel)]="newStudent.email"
                     formControlName="email"
                     class="form-control mb-4"
                     [ngClass]="{
@@ -99,7 +109,11 @@
                   <input
                     type="number"
                     step="0.01"
+                    min="1
+                  "
+                    max="10"
                     id="media"
+                    [(ngModel)]="newStudent.media"
                     formControlName="media"
                     class="form-control mb-4"
                     [ngClass]="{
@@ -107,8 +121,25 @@
                     }" />
                 </div>
                 <div class="d-flex justify-content-end">
-                  <button type="submit" class="btn btn-primary">
+                  <button
+                    *ngIf="!wannaUpdate"
+                    type="submit"
+                    class="btn btn-primary">
                     Hozzáadás
+                  </button>
+                  <button
+                    *ngIf="wannaUpdate"
+                    type="button"
+                    class="btn btn-warning me-2"
+                    (click)="cancelUpdate()">
+                    Mégse
+                  </button>
+                  <button
+                    *ngIf="wannaUpdate"
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="updateStudent()">
+                    Frissités
                   </button>
                 </div>
               </form>
@@ -160,7 +191,8 @@
                     class="col-3 d-flex justify-content-center align-items-center">
                     <button
                       type="button"
-                      class="btn btn-icon btn-outline-warning me-2">
+                      class="btn btn-icon btn-outline-warning me-2"
+                      (click)="selectStudent(student.id)">
                       <i class="ri-edit-box-line"></i>
                     </button>
                     <button

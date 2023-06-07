@@ -1,0 +1,140 @@
+<div class="content-wrapper p-0" *ngIf="!isLoading">
+  <div class="content-body p-0">
+    <div class="profile-foreground position-relative mx-n4 mt-n4">
+      <div class="profile-wid-bg">
+        <img
+          src="assets/images/small/img-1.jpg"
+          alt=""
+          style=""
+          class="profile-wid-img" />
+      </div>
+    </div>
+    <div class="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
+      <div class="row g-4 align-items-center">
+        <div class="col-7 mt-5">
+          <div class="mt-3">
+            <div class="card">
+              <div
+                class="card-body p-4 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                  <img
+                    class="img-fluid ms-2 me-4"
+                    src="/assets/images/logo_hu.png"
+                    alt="" />
+                  <div>
+                    <h2 class="mb-3">Üdvözöllek! 👋</h2>
+                    <h4>
+                      Sapientia Marosvásárhelyi kar Diploma vezető
+                      oldalán!
+                    </h4>
+                  </div>
+                </div>
+                <div class="col-2 d-flex justify-content-end">
+                  <img
+                    src="/assets/images/illustrations/guest.svg"
+                    class="img-fluid"
+                    alt="" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="row align-items-center justify-content-center">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-8">
+                <h4>Kész diplomák</h4>
+              </div>
+              <div class="col-4">
+                <div class="row">
+                  <div class="col">
+                    <div
+                      class="d-flex align-items-center justify-content-end pr-1 pb-1 pb-md-0">
+                      <input
+                        name="searchValue"
+                        type="search"
+                        class="form-control ml-25"
+                        (keyup)="filterUpdate($event)"
+                        (search)="filterUpdate($event)"
+                        placeholder="Keress kulcsszavak alapján" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div
+            class="col-lg-12"
+            *ngFor="
+              let diploma of diplomas
+                | paginate : { itemsPerPage: 2, currentPage: p }
+            ">
+            <div class="card border">
+              <div class="card-body">
+                <div class="d-sm-flex">
+                  <div class="flex-shrink-0"></div>
+                  <div class="flex-grow-1 ms-sm-4 mt-3 mt-sm-0">
+                    <h5>
+                      <a
+                        routerLink="../diploma/{{
+                          diploma.diplomaId
+                        }}">
+                        {{ diploma.title }}
+                      </a>
+                    </h5>
+                    <ul class="list-inline mb-3">
+                      <li class="list-inline-item">
+                        <span
+                          *ngFor="
+                            let keyword of diploma.keywords.split(',')
+                          "
+                          class="badge text-bg-light me-2">
+                          {{ keyword }}</span
+                        >
+                      </li>
+                    </ul>
+
+                    <div>
+                      <p class="mb-1">Diploma vezető(k):</p>
+                      <ul class="list-inline mb-0">
+                        <li
+                          class="list-inline-item"
+                          *ngFor="let teacher of diploma.teachers">
+                          <i
+                            class="ri-contacts-fill text-success align-middle me-1 custome-size-icon"></i>
+                          {{ teacher.lastName }}
+                          {{ teacher.firstName }}
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="mb-1">Kivietelező diák:</p>
+                      <i
+                        class="ri-contacts-fill text-success align-middle me-1 custome-size-icon"></i>
+                      {{ diploma.student.lastName }}
+                      {{ diploma.student.firstName }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--end card-->
+          </div>
+          <!--end col-->
+        </div>
+        <div class="mt-4">
+          <pagination-controls
+            (pageChange)="p = $event"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

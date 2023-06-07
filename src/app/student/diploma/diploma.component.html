@@ -25,14 +25,14 @@
             <div class="col-lg-4 col-4">
               <div class="p-2">
                 <h4 class="text-white mb-1">
-                  {{ diploma.stage | uppercase }}
+                  {{ getDiplomaStage(diploma.stage) | uppercase }}
                 </h4>
                 <p class="fs-14 mb-0">Állapot</p>
               </div>
             </div>
             <div
               class="col-lg-8 col-4"
-              *ngIf="diploma.stage === 'Terv'">
+              *ngIf="getDiplomaStage(diploma.stage) === 'PLAN'">
               <div class="p-2 d-flex flex-column align-items-center">
                 <div
                   class="form-check form-switch form-switch-lg form-switch-success">
@@ -82,7 +82,9 @@
                     <div class="col-xxl-2">
                       <div
                         class="card"
-                        *ngIf="diploma.stage === 'Terv'">
+                        *ngIf="
+                          getDiplomaStage(diploma.stage) === 'PLAN'
+                        ">
                         <div
                           class="card-body d-flex justify-content-center flex-column align-items-center">
                           <h5 class="card-title mb-1">
@@ -309,8 +311,9 @@
                 [ngbNavItem]="2"
                 class="nav-item"
                 *ngIf="
-                  diploma.stage === 'Folyamatban' ||
-                  diploma.stage === 'Elkészítve'
+                  getDiplomaStage(diploma.stage) ===
+                    'UNDER_IMPLEMENTATION' ||
+                  getDiplomaStage(diploma.stage) === 'FINISHED'
                 ">
                 <a
                   ngbNavLink
@@ -410,7 +413,10 @@
               <li
                 [ngbNavItem]="4"
                 class="nav-item"
-                *ngIf="diploma.stage === 'Folyamatban'">
+                *ngIf="
+                  getDiplomaStage(diploma.stage) ===
+                  'UNDER_IMPLEMENTATION'
+                ">
                 <a
                   ngbNavLink
                   class="nav-link"
@@ -441,10 +447,16 @@
                               </h5>
                               <div
                                 class="mb-0 d-flex align-items-center flex-column">
+                                <h5>Diploma feltöltése</h5>
                                 <h4 class="text-danger">
-                                  2020.03.23
+                                  {{
+                                    periodDto.documentumUpload | date
+                                  }}
                                 </h4>
-                                <h3 class="text-danger">20:32:23</h3>
+                                <h5>Diploma megvédése</h5>
+                                <h3 class="text-danger">
+                                  {{ periodDto.diplomaDefend | date }}
+                                </h3>
                               </div>
                             </div>
                           </div>
@@ -457,14 +469,18 @@
                               </h5>
                               <div
                                 class="mb-0 d-flex align-items-center flex-column">
-                                <P
-                                  >Lorem ipsum dolor sit amet
-                                  consectetur adipisicing elit.
-                                  Quaerat, cumque labore non ullam rem
-                                  neque eaque, dignissimos quasi ab
-                                  soluta doloribus quo incidunt
-                                  corporis harum.</P
-                                >
+                                <p>
+                                  A feltöltendő a ZIP file a következő
+                                  képen kell felépüljön:
+                                </p>
+                                <ul>
+                                  <li>1. Diploma dokumentáció.</li>
+                                  <li>
+                                    2. Egy könyvátr ami tartalmazza az
+                                    összes állományt ami tartozik a
+                                    diplomához.
+                                  </li>
+                                </ul>
                               </div>
                             </div>
                           </div>
@@ -475,27 +491,76 @@
                           <div class="card">
                             <div class="card-header">
                               <h4 class="card-title mb-0">
-                                Dropzone
+                                Diploma feltöltése
                               </h4>
                             </div>
-                            <!-- end card header -->
 
                             <div class="card-body">
-                              <p class="text-muted">
-                                DropzoneJS is an open source library
-                                that provides drag’n’drop file uploads
-                                with image previews.
-                              </p>
-
-                              <!-- <dropzone
-                                class="dropzone_sec"></dropzone> -->
-                              <!-- end dropzon-preview -->
+                              <form
+                                (ngSubmit)="upLoad()"
+                                #fileUploadForm="ngForm">
+                                <div class="form-group">
+                                  <label for="zip"
+                                    >Diploma file(.zip)</label
+                                  >
+                                  <div
+                                    class="d-flex justify-content-between align-items-center">
+                                    <input
+                                      type="file"
+                                      id="zip"
+                                      name="zip"
+                                      class="form-control me-3"
+                                      accept=".zip"
+                                      (change)="onFileChange($event)"
+                                      required />
+                                    <div
+                                      *ngIf="
+                                        isfileSelected &&
+                                        fileUploadForm.submitted
+                                      "
+                                      class="invalid-feedback">
+                                      Kérlek válassz ki 1 Zip file-t.
+                                    </div>
+                                    <button
+                                      type="submit"
+                                      class="btn btn-primary">
+                                      Feltöltés
+                                    </button>
+                                  </div>
+                                </div>
+                              </form>
                             </div>
-                            <!-- end card body -->
+                            <div
+                              class="card-footer"
+                              *ngIf="diplomaFile">
+                              <h4 class="card-title mb-0">
+                                Diploma sikeresen feltöltve!
+                              </h4>
+                              <h4
+                                class="mb-0 d-flex align-items-center">
+                                <i
+                                  class="ri-file-mark-line me-3 text-success display-4 diploma-icon"
+                                  (click)="downloadFile()"></i>
+                                <p class="mb-0 me-3">
+                                  {{ diplomaFile.title }}
+                                </p>
+                                <i
+                                  (click)="deleteDiploma()"
+                                  class="delete-icon ri-delete-bin-2-line text-danger mb-0 display-6 diploma-icon"></i>
+                              </h4>
+                            </div>
+                            <div
+                              class="card-footer"
+                              *ngIf="!diplomaFile">
+                              <h4
+                                class="mb-0 d-flex align-items-center">
+                                <h4 class="mb-0 text-danger">
+                                  Még nincs diploma feltöltve !
+                                </h4>
+                              </h4>
+                            </div>
                           </div>
-                          <!-- end card -->
                         </div>
-                        <!-- end col -->
                       </div>
                     </div>
                   </div>

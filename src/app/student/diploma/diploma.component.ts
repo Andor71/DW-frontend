@@ -1,13 +1,19 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { first, forkJoin, Subscription } from 'rxjs';
+import { DiplomaStages } from 'src/core/enums/diploma.enums';
+import { getDiplomaStage } from 'src/core/helpers/helperFunctions';
 import { CommentDto } from 'src/core/models/comment.model';
 import { DiplomaDto } from 'src/core/models/diploma.model';
+import { DiplomaFileDto } from 'src/core/models/diplomaFile.model';
+import { PeriodDto } from 'src/core/models/Period.model';
 import { UserDto } from 'src/core/models/user.model';
 import { CommentService } from 'src/core/services/comment.service';
 import { CookieService } from 'src/core/services/cookie.service';
 import { CustomToastrService } from 'src/core/services/CustomToastrService.service';
 import { DiplomaService } from 'src/core/services/diploma.service';
+import { DocumentService } from 'src/core/services/document.service';
+import { PeriodService } from 'src/core/services/period.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -16,6 +22,9 @@ import Swal from 'sweetalert2';
   styleUrls: ['./diploma.component.scss'],
 })
 export class DiplomaComponent {
+  //Helper Functions
+  getDiplomaStage = getDiplomaStage;
+
   //Data
   public diploma: DiplomaDto = new DiplomaDto();
   public id: number;
@@ -23,18 +32,24 @@ export class DiplomaComponent {
 
   public comments: Array<CommentDto> = new Array<CommentDto>();
   public commentDto: CommentDto = new CommentDto();
+  public periodDto: PeriodDto = new PeriodDto();
+  public formData: FormData = new FormData();
+  public diplomaFile: DiplomaFileDto = new DiplomaFileDto();
 
   //Helper
   public isLoading: boolean = true;
   public loadDataSubscription: Subscription = new Subscription();
   public tempApplied: Boolean;
+  public isfileSelected: Boolean;
 
   constructor(
     private diplomaService: DiplomaService,
     private toastrService: CustomToastrService,
     public route: ActivatedRoute,
     private commetService: CommentService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private periodService: PeriodService,
+    private router: Router
   ) {
     this.currentUser = this.cookieService.getCurrentUser();
     this.id = this.route.snapshot.params.id;
@@ -43,20 +58,41 @@ export class DiplomaComponent {
   ngOnInit(): void {
     this.loadData();
   }
+  loadStudentData(student: UserDto) {
+    this.loadDataSubscription = forkJoin([
+      this.diplomaService.getDiplomaFile(this.id, student.id),
+    ]).subscribe(
+      ([diplomaFile]) => {
+        this.diplomaFile = diplomaFile;
+      },
+      (error) => {
+        this.toastrService.toastrError(
+          'Hiba lépett fel az adatok betöltésénél!'
+        );
+      }
+    );
+  }
 
   loadData() {
     this.loadDataSubscription = forkJoin([
       this.diplomaService.getByIdForStudent(this.id),
       this.commetService.getByDiplomas(this.id),
+      this.periodService.getCurrentPeriodForMajor(
+        this.currentUser.majorDto.majorId
+      ),
     ]).subscribe(
-      ([diploma, comments]) => {
+      ([diploma, comments, period]) => {
         this.diploma = diploma;
         this.tempApplied = this.diploma.applied;
+        this.periodDto = period;
 
         this.comments = comments.sort((a, b) => {
           return <any>new Date(b.date) - <any>new Date(a.date);
         });
 
+        if (this.diploma.student != null) {
+          this.loadStudentData(this.diploma.student);
+        }
         this.isLoading = false;
       },
       (error) => {
@@ -147,8 +183,79 @@ export class DiplomaComponent {
           );
         },
         error: (e) => {
+          if (e === 'Csak 3 diplomára tudsz jelentkezni egyszerre!') {
+            this.toastrService.toastrError(
+              'Csak 3 diplomára tudsz jelentkezni egyszerre!'
+            );
+            this.router.navigate(['student/diplomas']);
+          } else {
+            this.toastrService.toastrError(
+              'Hiba lépett fel jelentkezés közben!'
+            );
+          }
+        },
+      });
+  }
+
+  onFileChange(event): void {
+    let zip = event.target.files;
+    if (zip && zip[0]) {
+      this.isfileSelected = true;
+      this.formData.append('file', zip[0]);
+      console.log(this.formData);
+    }
+  }
+  upLoad() {
+    if (!this.isfileSelected) {
+      this.toastrService.toastrWarning(
+        'Elöször válassz ki dokumentumot a feltöltéshez!'
+      );
+      return;
+    }
+
+    this.diplomaService
+      .uploadeDiplomaFile(this.formData, this.id, this.currentUser.id)
+      .pipe(first())
+      .subscribe({
+        next: (diplomaFileDto) => {
+          this.diplomaFile = diplomaFileDto;
+
           this.toastrService.toastrSuccess(
-            'Hiba lépett fel jelentkezés közben!'
+            'Dokumentum sikeresen feltöltve!'
+          );
+        },
+        error: (e) => {
+          this.toastrService.toastrError(
+            'Hiba lépett fel a dokumentum feltöltése közben!'
+          );
+        },
+      });
+  }
+  downloadFile() {
+    this.diplomaService
+      .downloadDiploma(this.id, this.currentUser.id)
+      .subscribe((response) => {
+        let blob: Blob = response.body;
+        let a = document.createElement('a');
+        a.download = this.diplomaFile.title;
+        a.href = window.URL.createObjectURL(blob);
+        a.click();
+      });
+  }
+  deleteDiploma() {
+    this.diplomaService
+      .deleteDiplomaFile(this.diplomaFile.diplomaFilesId)
+      .pipe(first())
+      .subscribe({
+        next: () => {
+          this.diplomaFile = null;
+          this.toastrService.toastrSuccess(
+            'Dokumentum sikeresen törölve!'
+          );
+        },
+        error: (e) => {
+          this.toastrService.toastrSuccess(
+            'Hiba lépett fe la dokumentum törlése közben!'
           );
         },
       });

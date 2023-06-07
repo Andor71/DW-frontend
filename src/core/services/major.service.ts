@@ -9,13 +9,13 @@ import { AllMajorDto, MajorDto } from '../models/major.model';
 export class MajorService {
   constructor(private http: HttpClient) {}
 
-  getAllMajorWithoutPeriods() {
+  getAllMajorWithoutPeriods(yearID: number) {
     return this.http.get<Array<MajorDto>>(
-      `${environment.apiUrl}/major/get-all-without-period`
+      `${environment.apiUrl}/major/get-all-without-period/` + yearID
     );
   }
   getAll() {
-    return this.http.get<Array<AllMajorDto>>(
+    return this.http.get<Array<MajorDto>>(
       `${environment.apiUrl}/major/get-all`
     );
   }

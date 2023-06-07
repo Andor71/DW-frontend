@@ -55,7 +55,7 @@ export class CreatePeriodComponent implements OnInit {
   }
   loadData() {
     this.loadDataSubscription = forkJoin([
-      this.majorService.getAllMajorWithoutPeriods(),
+      this.majorService.getAllMajorWithoutPeriods(this.yearID),
       this.yearService.getById(this.yearID),
     ]).subscribe(
       ([majors, yearDto]) => {
@@ -79,7 +79,7 @@ export class CreatePeriodComponent implements OnInit {
         if (this.periodDto[keys[i]] > this.periodDto[keys[i + 1]]) {
           this.createPeriodForm.get(keys[i]).setValue('');
           this.createPeriodForm.get(keys[i + 1]).setValue('');
-          this.toastrService.toastrError('Wrong Dates!');
+          this.toastrService.toastrError('Hibás dátumok!');
           return false;
         }
       }
@@ -104,6 +104,12 @@ export class CreatePeriodComponent implements OnInit {
     this.periodDto.major = this.majors.filter(
       (x) => x.majorId == this.f.major.value
     )[0];
+
+    if (this.periodDto.major == null) {
+      this.toastrService.toastrError('Válasz ki egy szakot!');
+      return;
+    }
+
     this.periodDto.year = this.yearDto;
 
     this.periodService
@@ -113,11 +119,13 @@ export class CreatePeriodComponent implements OnInit {
         next: (periodDto) => {
           this.router.navigate(['admin/periods']);
           this.toastrService.toastrSuccess(
-            'Period has been created succesfully!'
+            'Időszak sikeresen létrehozva!'
           );
         },
         error: (e) => {
-          this.toastrService.toastrError('Error creating a period!');
+          this.toastrService.toastrError(
+            'Hiba lépett fel az időszak létrehozása közben!'
+          );
           console.log(e);
         },
       });

@@ -1,21 +1,27 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
-} from "@angular/forms";
-import { first } from "rxjs/operators";
-import { Subject } from "rxjs";
-import { HttpErrorResponse, HttpResponse } from "@angular/common/http";
-import { CustomToastrService } from "src/core/services/CustomToastrService.service";
-import { AuthenticationService } from "src/core/services/authentication.service";
-import { CookieService } from "src/core/services/cookie.service";
+} from '@angular/forms';
+import { first } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import {
+  HttpErrorResponse,
+  HttpResponse,
+} from '@angular/common/http';
+import { CustomToastrService } from 'src/core/services/CustomToastrService.service';
+import { AuthenticationService } from 'src/core/services/authentication.service';
+import { CookieService } from 'src/core/services/cookie.service';
+import { UserDto } from 'src/core/models/user.model';
+import { UserStatus } from 'src/core/enums/user.enums';
+import { DiplomaService } from 'src/core/services/diploma.service';
 
 @Component({
-  selector: "app-login",
-  templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.scss"],
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
 export class LoginComponent implements OnInit {
@@ -24,7 +30,7 @@ export class LoginComponent implements OnInit {
   public fieldTextType!: boolean;
   public loading = false;
   public submitted = false;
-  public error = "";
+  public error = '';
   public passwordTextType: boolean;
   public returnUrl!: string;
   public year: number = new Date().getFullYear();
@@ -36,10 +42,11 @@ export class LoginComponent implements OnInit {
     private _router: Router,
     private _authentificationService: AuthenticationService,
     private cookieService: CookieService,
-    private toastrService: CustomToastrService
+    private toastrService: CustomToastrService,
+    private diplomaService: DiplomaService
   ) {
     if (this._authentificationService.currentUser) {
-      this._router.navigate(["/"]);
+      this._router.navigate(['/']);
     }
     this._unsubscribeAll = new Subject();
   }
@@ -49,8 +56,8 @@ export class LoginComponent implements OnInit {
    */
   ngOnInit(): void {
     this.loginForm = this._formBuilder.group({
-      email: ["s@s.com", [Validators.required, Validators.email]],
-      password: ["123", Validators.required],
+      email: ['s@s.com', [Validators.required, Validators.email]],
+      password: ['123', Validators.required],
     });
   }
 
@@ -74,24 +81,51 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         (response: HttpResponse<any>) => {
-          let user = response.body;
-          user.token = response.headers.get("Authorization");
+          let user = response.body as UserDto;
+          user.token = response.headers.get('Authorization');
           this._authentificationService.setUser(user);
-          this.cookieService.setCookie("currentUser", JSON.stringify(user), 7);
+          this.cookieService.setCookie(
+            'currentUser',
+            JSON.stringify(user),
+            7
+          );
           setTimeout(() => {
-            if (user.role == "teacher" || user.role == "departmenthead") {
-              this._router.navigate(["./teacher/diplomas"]);
+            if (
+              user.role == 'teacher' ||
+              user.role == 'departmenthead'
+            ) {
+              this._router.navigate(['./teacher/diplomas']);
             }
-            if (user.role == "admin") {
-              this._router.navigate(["./admin/periods"]);
+            if (user.role == 'admin') {
+              this._router.navigate(['./admin/periods']);
             }
-            if (user.role == "student") {
-              this._router.navigate(["./student/diplomas"]);
+            if (user.role == 'student') {
+              if (user.status === UserStatus.SEARCHING) {
+                this._router.navigate(['./student/diplomas']);
+              }
+              if (
+                user.status === UserStatus.IMPLEMENTING ||
+                user.status === UserStatus.FINISHED
+              ) {
+                this.diplomaService
+                  .getCurrentDiploma()
+                  .pipe(first())
+                  .subscribe({
+                    next: (diplomaDto) => {
+                      this._router.navigate([
+                        './student/diploma/' + diplomaDto.diplomaId,
+                      ]);
+                    },
+                    error: (e) => {
+                      this.toastrService.toastrError(e);
+                    },
+                  });
+              }
             }
           }, 300);
         },
         (error: HttpErrorResponse) => {
-          this.toastrService.toastrError("" + error);
+          this.toastrService.toastrError('' + error);
           this.loading = false;
         }
       );

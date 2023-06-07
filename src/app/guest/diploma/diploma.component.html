@@ -1,0 +1,255 @@
+<div class="content-wrapper p-0" *ngIf="!isLoading">
+  <div class="content-body p-0">
+    <div class="profile-foreground position-relative mx-n4 mt-n4">
+      <div class="profile-wid-bg">
+        <img
+          src="assets/images/small/img-1.jpg"
+          alt=""
+          style=""
+          class="profile-wid-img" />
+      </div>
+    </div>
+    <div class="pt-4 mb-4 mb-lg-3 pb-lg-4 profile-wrapper">
+      <div class="row g-4">
+        <div class="col">
+          <div class="p-2">
+            <h3 class="text-white mb-1 d-flex align-items-center">
+              <i class="ri-book-2-fill me-1 display-3"></i>
+              {{ diploma.title }}
+            </h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div>
+          <div class="d-flex profile-wrapper">
+            <ul
+              ngbNav
+              #customNav="ngbNav"
+              [activeId]="1"
+              class="nav nav-pills animation-nav profile-nav gap-2 gap-lg-3 flex-grow-1"
+              role="tablist">
+              <li [ngbNavItem]="1" class="nav-item">
+                <a
+                  ngbNavLink
+                  class="nav-link"
+                  data-bs-toggle="tab"
+                  role="tab">
+                  <i
+                    class="ri-airplay-fill d-inline-block d-md-none"></i>
+                  <span class="d-none d-md-inline-block"
+                    >Diploma Információk</span
+                  >
+                </a>
+                <ng-template ngbNavContent>
+                  <div class="row">
+                    <div class="col-xxl-2">
+                      <div class="card">
+                        <div
+                          class="card-body d-flex justify-content-center flex-column align-items-center">
+                          <h5 class="card-title mb-1">
+                            Diploma letöltése
+                          </h5>
+                          <h4
+                            class="mb-0 d-flex align-items-center flex-column">
+                            <i
+                              class="ri-file-mark-line me-1 text-success display-4 diploma-icon"
+                              (click)="downloadFile()"></i>
+                          </h4>
+                        </div>
+                      </div>
+
+                      <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title mb-3">
+                            Diploma Vezető Infromációk
+                          </h5>
+                          <div class="table-responsive">
+                            <table
+                              class="table table-borderless mb-0">
+                              <tbody
+                                *ngFor="
+                                  let teacher of diploma.teachers
+                                ">
+                                <tr>
+                                  <th class="ps-0" scope="row">
+                                    Név :
+                                  </th>
+                                  <td class="text-muted">
+                                    {{ teacher.lastName }}
+                                    {{ teacher.firstName }}
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <th class="ps-0" scope="row">
+                                    E-mail :
+                                  </th>
+                                  <td class="text-muted">
+                                    {{ teacher.email }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                        <ng-container
+                          *ngIf="diploma.student !== null">
+                          <div class="card-body">
+                            <h5 class="card-title mb-3">
+                              Diák Infromációk
+                            </h5>
+                            <div class="table-responsive">
+                              <table
+                                class="table table-borderless mb-0">
+                                <tbody>
+                                  <tr>
+                                    <th class="ps-0" scope="row">
+                                      Név :
+                                    </th>
+                                    <td class="text-muted">
+                                      {{ diploma.student.lastName }}
+                                      {{ diploma.student.firstName }}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th class="ps-0" scope="row">
+                                      E-mail :
+                                    </th>
+                                    <td class="text-muted">
+                                      {{ diploma.student.email }}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </ng-container>
+                        <!-- end card body -->
+                      </div>
+                      <!-- end card -->
+
+                      <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title mb-4">Kulcsszavak</h5>
+                          <div
+                            class="d-flex flex-wrap gap-2 fs-15 flex-row">
+                            <span
+                              *ngFor="
+                                let keyword of diploma.keywords.split(
+                                  ','
+                                )
+                              "
+                              class="badge text-bg-light">
+                              {{ keyword }}</span
+                            >
+                          </div>
+                        </div>
+                        <!-- end card body -->
+                      </div>
+                      <div class="card">
+                        <div
+                          class="card-header align-items-center d-flex">
+                          <h4 class="card-title mb-0 me-2">
+                            Szükséges ismeretek
+                          </h4>
+                        </div>
+                        <div class="card-body">
+                          <p
+                            [innerHtml]="
+                              diploma.necessaryKnowledge
+                            "></p>
+                        </div>
+                        <!-- end card body -->
+                      </div>
+                      <!-- end card -->
+
+                      <!--end card-->
+                    </div>
+                    <!--end col-->
+                    <div class="col-xxl-6">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="card">
+                            <div
+                              class="card-header align-items-center d-flex">
+                              <h4 class="card-title mb-0 me-2">
+                                Leiárs
+                              </h4>
+                            </div>
+                            <div class="card-body">
+                              <p
+                                [innerHtml]="diploma.description"></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="card">
+                            <div
+                              class="card-header align-items-center d-flex">
+                              <h4 class="card-title mb-0 me-2">
+                                Más elvárások
+                              </h4>
+                            </div>
+                            <div class="card-body">
+                              <p
+                                [innerHtml]="
+                                  diploma.differentExpectations
+                                "></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-xxl-4">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="card">
+                            <div
+                              class="card-header align-items-center d-flex">
+                              <h4 class="card-title mb-0 me-2">
+                                Kivitelezés részletei
+                              </h4>
+                            </div>
+                            <div class="card-body">
+                              <p [innerHtml]="diploma.details"></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="card">
+                            <div
+                              class="card-header align-items-center d-flex">
+                              <h4 class="card-title mb-0 me-2">
+                                Bibliográfia
+                              </h4>
+                            </div>
+                            <div class="card-body">
+                              <p
+                                [innerHtml]="
+                                  diploma.bibliography
+                                "></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+            </ul>
+          </div>
+          <div class="tab-content pt-4 text-muted">
+            <div [ngbNavOutlet]="customNav"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

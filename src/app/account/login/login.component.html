@@ -17,22 +17,6 @@
   <!-- auth page content -->
   <div class="auth-page-content">
     <div class="container">
-      <!-- <div class="row">
-        <div class="col-lg-12">
-          <div class="text-center mt-sm-5 mb-4 text-white-50">
-            <div>
-              <a routerLink="" class="d-inline-block auth-logo">
-                <img
-                  src="/assets/images/sapi-logo.png"
-                  alt=""
-                  height="200" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div> -->
-      <!-- end row -->
-
       <div
         class="row justify-content-center flex-column align-items-center mt-5">
         <div class="col-md-8 col-lg-6 col-xl-5">
@@ -73,13 +57,6 @@
                   </div>
 
                   <div class="mb-3">
-                    <div class="float-end">
-                      <a
-                        routerLink="/pass-reset/basic"
-                        class="text-muted"
-                        >Elfelejtetted a jelszavad?</a
-                      >
-                    </div>
                     <label class="form-label" for="password-input"
                       >Jelszó</label
                     >
@@ -144,6 +121,19 @@
                       <h5 class="fs-13 mb-4 title">Regisztáció</h5>
                     </div>
                     Vedd fel a kapcsolat a titkársággal!
+                  </div>
+                  <div class="mt-4 text-center">
+                    <div class="signin-other-title">
+                      <h5 class="fs-13 mb-4 title">
+                        Lépj be vendégként
+                      </h5>
+                    </div>
+                    <button
+                      class="btn btn-primary w-100"
+                      type="button"
+                      [routerLink]="'/guest/diplomas'">
+                      Kész diplomák megtekíntése!
+                    </button>
                   </div>
                 </form>
               </div>

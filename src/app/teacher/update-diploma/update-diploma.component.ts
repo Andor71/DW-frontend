@@ -88,7 +88,8 @@ export class UpdateDiplomaComponent implements OnInit {
       this.keywords.push(this.addCustomKeyWord(x));
       this.customKeywords.push(x);
     });
-    this.allPeriods.forEach((x) => {
+
+    this.diploma.periods.forEach((x) => {
       this.selectedMajorIds.push(x.major.majorId);
     });
 
@@ -114,9 +115,10 @@ export class UpdateDiplomaComponent implements OnInit {
 
         this.yearDto = yearDto;
         this.allPeriods = periodDtos;
+
         this.diploma = diploma;
         this.initFields();
-
+        this.createMajors();
         this.isLoading = false;
       },
       (error) => {

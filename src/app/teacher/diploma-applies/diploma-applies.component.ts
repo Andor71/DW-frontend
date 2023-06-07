@@ -3,7 +3,9 @@ import { first, forkJoin, Subscription } from 'rxjs';
 import { PeriodEnums } from 'src/core/enums/periode.enums';
 import { DiplomaDto } from 'src/core/models/diploma.model';
 import { FinishedSDMappingDto } from 'src/core/models/finishedSDMapping.model';
+import { UserDto } from 'src/core/models/user.model';
 import { CustomToastrService } from 'src/core/services/CustomToastrService.service';
+import { CookieService } from 'src/core/services/cookie.service';
 import { DiplomaService } from 'src/core/services/diploma.service';
 import { PeriodService } from 'src/core/services/period.service';
 import { UsersService } from 'src/core/services/user.service';
@@ -19,8 +21,9 @@ export class DiplomaAppliesComponent implements OnInit {
   public diplomaApplies: Array<FinishedSDMappingDto> =
     new Array<FinishedSDMappingDto>();
   public FIRST_TOPIC_ADVERTISMENT_END: Boolean;
-  public FIRST_ALOCATION: Boolean;
+  public FIRST_ALLOCATION: Boolean;
   public SECOND_ALLOCATION: Boolean;
+  public currentUser: UserDto;
 
   //Helper
   public isLoading = true;
@@ -32,8 +35,11 @@ export class DiplomaAppliesComponent implements OnInit {
     private diplomaService: DiplomaService,
     private toastrService: CustomToastrService,
     private periodService: PeriodService,
-    private userServices: UsersService
-  ) {}
+    private userServices: UsersService,
+    private cookieService: CookieService
+  ) {
+    this.currentUser = cookieService.getCurrentUser();
+  }
 
   ngOnInit(): void {
     this.loadData();
@@ -41,7 +47,9 @@ export class DiplomaAppliesComponent implements OnInit {
 
   loadData() {
     this.loadDataSubscription = forkJoin([
-      this.diplomaService.getAllAppliedDiplomasForApproving(),
+      this.diplomaService.getAllAppliedDiplomasForApproving(
+        this.currentUser.department.departmentId
+      ),
       this.userServices.checkPreconditions(
         PeriodEnums.FIRST_TOPIC_ADVERTISMENT_END
       ),
@@ -55,13 +63,12 @@ export class DiplomaAppliesComponent implements OnInit {
       ([
         diplomaApplies,
         FIRST_TOPIC_ADVERTISMENT_END,
-        FIRST_ALOCATION,
-
+        FIRST_ALLOCATION,
         SECOND_ALLOCATION,
       ]) => {
         this.FIRST_TOPIC_ADVERTISMENT_END =
           FIRST_TOPIC_ADVERTISMENT_END;
-        this.FIRST_ALOCATION = FIRST_ALOCATION;
+        this.FIRST_ALLOCATION = FIRST_ALLOCATION;
         this.SECOND_ALLOCATION = SECOND_ALLOCATION;
 
         this.diplomaApplies = diplomaApplies;
@@ -71,9 +78,6 @@ export class DiplomaAppliesComponent implements OnInit {
           }
         });
 
-        console.log(this.FIRST_ALOCATION);
-
-        this.preconditionsAlert();
         this.isLoading = false;
       },
       (error) => {
@@ -83,43 +87,7 @@ export class DiplomaAppliesComponent implements OnInit {
       }
     );
   }
-  preconditionsAlert() {
-    if (!this.FIRST_ALOCATION) {
-      Swal.fire({
-        title: 'Még nem fejeződött be a jelentkezési időszak',
-        icon: 'warning',
-        confirmButtonText: 'OK!',
-      });
-    }
-  }
 
-  sortStudentsForDiploma() {
-    this.diplomaService
-      .sortStudentsForDiploma()
-      .pipe(first())
-      .subscribe({
-        next: () => {
-          this.diplomaService
-            .getAllAppliedDiplomasForApproving()
-            .pipe(first())
-            .subscribe({
-              next: (appliedDiplomas) => {
-                this.diplomaApplies = appliedDiplomas;
-              },
-              error: (e) => {
-                this.toastrService.toastrError(
-                  'Hiba lépett fel a diákok elosztása közben!'
-                );
-              },
-            });
-        },
-        error: (e) => {
-          this.toastrService.toastrError(
-            'Hiba lépett fel a diákok elosztása közben!'
-          );
-        },
-      });
-  }
   enableStudentDiploma(finishedSDMapping: FinishedSDMappingDto) {
     this.diplomaService
       .enableStudentDiploma(
@@ -169,5 +137,31 @@ export class DiplomaAppliesComponent implements OnInit {
           );
         },
       });
+  }
+  finalizeApplies() {
+    Swal.fire({
+      title: 'Biztos vagy benne?',
+      text: 'A véglegesítés után már nem leszel képes változtani a jelentkezéseken!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Igen, véglegesítem!',
+    }).then((result) => {
+      if (result.isConfirmed)
+        this.diplomaService
+          .finalizeApplies()
+          .pipe(first())
+          .subscribe({
+            next: () => {
+              this.toastrService.toastrSuccess(
+                'Sikeresen véglegesítetted a diploma jelentkezéseket!'
+              );
+            },
+            error: () => {
+              this.toastrService.toastrError(
+                'Hiba lépett fel a diploma jelentkezések véglegesítése közben!'
+              );
+            },
+          });
+    });
   }
 }

@@ -11,6 +11,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AddStudentsComponent } from './add-students/add-students.component';
 import { PreloaderComponent } from '../shared/preloader/preloader.component';
 import { SharedModule } from '../shared/shared.module';
+import { AddTeacherComponent } from './add-teacher/add-teacher.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,11 @@ const routes: Routes = [
     data: { animation: 'decommerce' },
   },
   {
+    path: 'add-teacher',
+    component: AddTeacherComponent,
+    data: { animation: 'decommerce' },
+  },
+  {
     path: '',
     redirectTo: '/admin/periods',
     pathMatch: 'full',
@@ -50,6 +56,7 @@ const routes: Routes = [
     CreatePeriodComponent,
     PeriodComponent,
     AddStudentsComponent,
+    AddTeacherComponent,
   ],
   imports: [
     CommonModule,

@@ -1,3 +1,5 @@
+import { UserStatus } from '../enums/user.enums';
+import { DepartmentDto } from './department.model';
 import { MajorDto } from './major.model';
 
 export class UserDto {
@@ -11,5 +13,12 @@ export class UserDto {
   majorDto: MajorDto;
   infoName?: string;
   media?: number;
-  status?: string;
+  status?: UserStatus;
+  token?: string;
+  department?: DepartmentDto;
+}
+
+export class PasswordDto {
+  password: string;
+  validationCode: string;
 }

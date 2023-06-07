@@ -1,0 +1,5 @@
+export enum UserStatus {
+  SEARCHING = 'SEARCHING',
+  IMPLEMENTING = 'IMPLEMENTING',
+  FINISHED = 'FINISHED',
+}

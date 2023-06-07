@@ -5,49 +5,62 @@ import {
   Output,
   ViewChild,
   ElementRef,
-} from "@angular/core";
-import { Router } from "@angular/router";
-import { UserDto } from "src/core/models/user.model";
-import { CookieService } from "src/core/services/cookie.service";
+} from '@angular/core';
+import { Router } from '@angular/router';
+import { UserDto } from 'src/core/models/user.model';
+import { CookieService } from 'src/core/services/cookie.service';
 
 import {
   MENU_ADMIN,
   MENU_DEPARTMENTHEAD,
+  MENU_GUEST,
   MENU_STUDENT,
   MENU_TEACHER,
-} from "./menu";
-import { MenuItem } from "./menu.model";
+} from './menu';
+import { MenuItem } from './menu.model';
 
 @Component({
-  selector: "app-horizontal-topbar",
-  templateUrl: "./horizontal-topbar.component.html",
-  styleUrls: ["./horizontal-topbar.component.scss"],
+  selector: 'app-horizontal-topbar',
+  templateUrl: './horizontal-topbar.component.html',
+  styleUrls: ['./horizontal-topbar.component.scss'],
 })
 export class HorizontalTopbarComponent implements OnInit {
   menu: any;
   menuItems: MenuItem[] = [];
   currentUser: UserDto;
-  @ViewChild("sideMenu") sideMenu!: ElementRef;
+  @ViewChild('sideMenu') sideMenu!: ElementRef;
   @Output() mobileMenuButtonClicked = new EventEmitter();
 
-  constructor(private router: Router, private cookieService: CookieService) {}
+  constructor(
+    private router: Router,
+    private cookieService: CookieService
+  ) {}
 
   ngOnInit(): void {
     this.currentUser = this.cookieService.getCurrentUser();
-    if (this.currentUser.role === "admin") {
+
+    if (this.currentUser == null) {
+      this.menuItems = MENU_GUEST;
+      return;
+    }
+    if (this.currentUser.role === 'admin') {
       this.menuItems = MENU_ADMIN;
+      return;
     }
 
-    if (this.currentUser.role === "student") {
+    if (this.currentUser.role === 'student') {
       this.menuItems = MENU_STUDENT;
+      return;
     }
 
-    if (this.currentUser.role === "teacher") {
+    if (this.currentUser.role === 'teacher') {
       this.menuItems = MENU_TEACHER;
+      return;
     }
 
-    if (this.currentUser.role === "departmenthead") {
+    if (this.currentUser.role === 'departmenthead') {
       this.menuItems = MENU_DEPARTMENTHEAD;
+      return;
     }
   }
 
@@ -60,51 +73,60 @@ export class HorizontalTopbarComponent implements OnInit {
 
   removeActivation(items: any) {
     items.forEach((item: any) => {
-      if (item.classList.contains("menu-link")) {
-        if (!item.classList.contains("active")) {
-          item.setAttribute("aria-expanded", false);
+      if (item.classList.contains('menu-link')) {
+        if (!item.classList.contains('active')) {
+          item.setAttribute('aria-expanded', false);
         }
         item.nextElementSibling
-          ? item.nextElementSibling.classList.remove("show")
+          ? item.nextElementSibling.classList.remove('show')
           : null;
       }
-      if (item.classList.contains("nav-link")) {
+      if (item.classList.contains('nav-link')) {
         if (item.nextElementSibling) {
-          item.nextElementSibling.classList.remove("show");
+          item.nextElementSibling.classList.remove('show');
         }
-        item.setAttribute("aria-expanded", false);
+        item.setAttribute('aria-expanded', false);
       }
-      item.classList.remove("active");
+      item.classList.remove('active');
     });
   }
 
   // remove active items of two-column-menu
   activateParentDropdown(item: any) {
     // navbar-nav menu add active
-    item.classList.add("active");
-    let parentCollapseDiv = item.closest(".collapse.menu-dropdown");
+    item.classList.add('active');
+    let parentCollapseDiv = item.closest('.collapse.menu-dropdown');
     if (parentCollapseDiv) {
       // to set aria expand true remaining
-      parentCollapseDiv.classList.add("show");
-      parentCollapseDiv.parentElement.children[0].classList.add("active");
-      parentCollapseDiv.parentElement.children[0].setAttribute(
-        "aria-expanded",
-        "true"
+      parentCollapseDiv.classList.add('show');
+      parentCollapseDiv.parentElement.children[0].classList.add(
+        'active'
       );
-      if (parentCollapseDiv.parentElement.closest(".collapse.menu-dropdown")) {
+      parentCollapseDiv.parentElement.children[0].setAttribute(
+        'aria-expanded',
+        'true'
+      );
+      if (
+        parentCollapseDiv.parentElement.closest(
+          '.collapse.menu-dropdown'
+        )
+      ) {
         parentCollapseDiv.parentElement
-          .closest(".collapse")
-          .classList.add("show");
+          .closest('.collapse')
+          .classList.add('show');
         if (
-          parentCollapseDiv.parentElement.closest(".collapse")
+          parentCollapseDiv.parentElement.closest('.collapse')
             .previousElementSibling
         )
           parentCollapseDiv.parentElement
-            .closest(".collapse")
-            .previousElementSibling.classList.add("active");
+            .closest('.collapse')
+            .previousElementSibling.classList.add('active');
         parentCollapseDiv.parentElement
-          .closest(".collapse")
-          .previousElementSibling.setAttribute("aria-expanded", "true");
+          .closest('.collapse')
+          .previousElementSibling.setAttribute(
+            'aria-expanded',
+            'true'
+          );
       }
       return false;
     }
@@ -112,10 +134,10 @@ export class HorizontalTopbarComponent implements OnInit {
   }
 
   updateActive(event: any) {
-    const ul = document.getElementById("navbar-nav");
+    const ul = document.getElementById('navbar-nav');
 
     if (ul) {
-      const items = Array.from(ul.querySelectorAll("a.nav-link"));
+      const items = Array.from(ul.querySelectorAll('a.nav-link'));
       this.removeActivation(items);
     }
     this.activateParentDropdown(event.target);
@@ -123,12 +145,12 @@ export class HorizontalTopbarComponent implements OnInit {
 
   initActiveMenu() {
     const pathName = window.location.pathname;
-    const ul = document.getElementById("navbar-nav");
+    const ul = document.getElementById('navbar-nav');
 
     if (ul) {
-      const items = Array.from(ul.querySelectorAll("a.nav-link"));
+      const items = Array.from(ul.querySelectorAll('a.nav-link'));
       let activeItems = items.filter((x: any) =>
-        x.classList.contains("active")
+        x.classList.contains('active')
       );
       this.removeActivation(activeItems);
       let matchingMenuItem = items.find((x: any) => {
@@ -142,29 +164,31 @@ export class HorizontalTopbarComponent implements OnInit {
 
   toggleSubItem(event: any) {
     if (event.target && event.target.nextElementSibling)
-      event.target.nextElementSibling.classList.toggle("show");
+      event.target.nextElementSibling.classList.toggle('show');
   }
 
   toggleItem(event: any) {
-    let isCurrentMenuId = event.target.closest("a.nav-link");
+    let isCurrentMenuId = event.target.closest('a.nav-link');
 
     let isMenu = isCurrentMenuId.nextElementSibling as any;
-    let dropDowns = Array.from(document.querySelectorAll("#navbar-nav .show"));
+    let dropDowns = Array.from(
+      document.querySelectorAll('#navbar-nav .show')
+    );
     dropDowns.forEach((node: any) => {
-      node.classList.remove("show");
+      node.classList.remove('show');
     });
 
-    isMenu ? isMenu.classList.add("show") : null;
+    isMenu ? isMenu.classList.add('show') : null;
 
-    const ul = document.getElementById("navbar-nav");
+    const ul = document.getElementById('navbar-nav');
     if (ul) {
-      const iconItems = Array.from(ul.getElementsByTagName("a"));
+      const iconItems = Array.from(ul.getElementsByTagName('a'));
       let activeIconItems = iconItems.filter((x: any) =>
-        x.classList.contains("active")
+        x.classList.contains('active')
       );
       activeIconItems.forEach((item: any) => {
-        item.setAttribute("aria-expanded", "false");
-        item.classList.remove("active");
+        item.setAttribute('aria-expanded', 'false');
+        item.classList.remove('active');
       });
     }
     if (isCurrentMenuId) {
@@ -177,7 +201,9 @@ export class HorizontalTopbarComponent implements OnInit {
    * @param item menuItem
    */
   hasItems(item: MenuItem) {
-    return item.subItems !== undefined ? item.subItems.length > 0 : false;
+    return item.subItems !== undefined
+      ? item.subItems.length > 0
+      : false;
   }
 
   /**

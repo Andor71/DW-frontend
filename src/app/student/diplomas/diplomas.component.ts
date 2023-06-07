@@ -4,11 +4,15 @@ import { Router } from '@angular/router';
 import { first, forkJoin, Subscription } from 'rxjs';
 import { Options } from 'sortablejs';
 import { PeriodEnums } from 'src/core/enums/periode.enums';
+import { UserStatus } from 'src/core/enums/user.enums';
 import { DiplomaDto } from 'src/core/models/diploma.model';
+import { PeriodDto } from 'src/core/models/Period.model';
 import { UserDto } from 'src/core/models/user.model';
+import { AuthenticationService } from 'src/core/services/authentication.service';
 import { CookieService } from 'src/core/services/cookie.service';
 import { CustomToastrService } from 'src/core/services/CustomToastrService.service';
 import { DiplomaService } from 'src/core/services/diploma.service';
+import { PeriodService } from 'src/core/services/period.service';
 import { UsersService } from 'src/core/services/user.service';
 import Swal from 'sweetalert2';
 
@@ -24,9 +28,14 @@ export class DiplomasComponent {
   public appliedDiplomas: Array<DiplomaDto> = new Array<DiplomaDto>();
   public currentUser: UserDto;
   public FIRST_TOPIC_ADVERTISMENT_END: Boolean;
+  public FIRST_ALLOCATION: Boolean;
+  public SECOND_ALLOCATION: Boolean;
+  public SECOND_TOPIC_ADVERTISMENT_END: Boolean;
+  public period: PeriodDto = new PeriodDto();
   //Helper
   public isLoading = true;
   public loadDataSubscription: Subscription = new Subscription();
+  p: number = 1;
 
   public options: Options = {
     onEnd: (event: any) => {
@@ -40,26 +49,14 @@ export class DiplomasComponent {
     private toastrService: CustomToastrService,
     private cookieService: CookieService,
     private userService: UsersService,
+    private authenticationService: AuthenticationService,
+    private periodService: PeriodService,
     private _router: Router
   ) {}
   ngOnInit(): void {
     this.currentUser = this.cookieService.getCurrentUser();
-    console.log(this.currentUser);
-
-    if (this.currentUser.status !== 'searching') {
-      this.diplomaService
-        .getCurrentDiploma()
-        .pipe(first())
-        .subscribe({
-          next: (diplomaDto) => {
-            this._router.navigate([
-              './student/diploma/' + diplomaDto.diplomaId,
-            ]);
-          },
-          error: (e) => {
-            this.toastrService.toastrError(e);
-          },
-        });
+    if (this.currentUser.status !== UserStatus.SEARCHING) {
+      this.authenticationService.logout();
     }
     this.loadData();
   }
@@ -68,17 +65,47 @@ export class DiplomasComponent {
     this.loadDataSubscription = forkJoin([
       this.diplomaService.getAllVisibleForGivenMajor(),
       this.diplomaService.getAllAppliedDiplomasForStudent(),
+      this.periodService.getCurrentPeriodForMajor(
+        this.currentUser.majorDto.majorId
+      ),
       this.userService.checkPreconditions(
         PeriodEnums.FIRST_TOPIC_ADVERTISMENT_END
       ),
+      this.userService.checkPreconditions(
+        PeriodEnums.SECOND_TOPIC_ADVERTISMENT_END
+      ),
+      this.userService.checkPreconditions(
+        PeriodEnums.SECOND_ALLOCATION
+      ),
     ]).subscribe(
-      ([diplomas, appliedDiplomas, FIRST_TOPIC_ADVERTISMENT_END]) => {
+      ([
+        diplomas,
+        appliedDiplomas,
+        period,
+        FIRST_TOPIC_ADVERTISMENT_END,
+        SECOND_TOPIC_ADVERTISMENT_END,
+        SECOND_ALLOCATION,
+      ]) => {
         this.FIRST_TOPIC_ADVERTISMENT_END =
           FIRST_TOPIC_ADVERTISMENT_END;
+        this.SECOND_TOPIC_ADVERTISMENT_END =
+          SECOND_TOPIC_ADVERTISMENT_END;
+        this.SECOND_ALLOCATION = SECOND_ALLOCATION;
+        if (
+          this.SECOND_ALLOCATION &&
+          this.currentUser.status === UserStatus.SEARCHING
+        ) {
+          this.authenticationService.logout();
+          this.toastrService.toastrError(
+            'Lejártak a diploma leosztási időszakok, keresd fel a titkárságot!'
+          );
+          return;
+        }
+        this.period = period;
         this.diplomas = diplomas;
         this.diplomasConst = diplomas;
         this.appliedDiplomas = appliedDiplomas;
-
+        this.preconditionsAlert();
         this.isLoading = false;
       },
       (error) => {
@@ -94,7 +121,18 @@ export class DiplomasComponent {
     if (!this.FIRST_TOPIC_ADVERTISMENT_END) {
       Swal.fire({
         title:
-          'Még nem fejeződött be a diploma feltöltési időszak, a diploma lista még vátozhat!',
+          'Még nem fejeződött be a diploma feltöltési időszak, a diploma lista még változhat!',
+        icon: 'warning',
+        confirmButtonText: 'OK!',
+      });
+    }
+    if (
+      !this.FIRST_TOPIC_ADVERTISMENT_END &&
+      !this.FIRST_TOPIC_ADVERTISMENT_END
+    ) {
+      Swal.fire({
+        title:
+          'Még nem fejeződött be a diploma feltöltési időszak, a diploma lista még változhat!',
         icon: 'warning',
         confirmButtonText: 'OK!',
       });
@@ -124,9 +162,10 @@ export class DiplomasComponent {
     const temp = this.diplomasConst.filter((d) => {
       return d.keywords.toLowerCase().indexOf(val) !== -1 || !val;
     });
-    // update the rows
     this.diplomas = temp;
-    // Whenever the filter changes, always go back to the first page
-    // this.table.offset = 0;
+  }
+
+  datePassed(date: Date) {
+    return date < new Date();
   }
 }

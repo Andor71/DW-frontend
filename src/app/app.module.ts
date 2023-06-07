@@ -5,7 +5,6 @@ import {
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ToastrModule } from 'ngx-toastr';
-import { AuthGuard } from 'src/core/auth/auth.guards';
 import { ErrorInterceptor } from 'src/core/auth/error.interceptor';
 import { JwtInterceptor } from 'src/core/auth/jwt.interceptor';
 import { AppRoutingModule } from './app-routing.module';
@@ -13,12 +12,16 @@ import { AppComponent } from './app.component';
 import { LayoutsModule } from './layouts/layouts.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PreloaderComponent } from './shared/preloader/preloader.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { AuthAdminGuard } from 'src/core/guards/auth-admin.guard';
+import { AuthTeacherGouard } from 'src/core/guards/auth-teacher.gurad';
 // import { SortablejsModule } from "angular-sortablejs";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     AppRoutingModule,
+    NgxPaginationModule,
     BrowserAnimationsModule,
     LayoutsModule,
     BrowserModule,
@@ -28,6 +31,8 @@ import { PreloaderComponent } from './shared/preloader/preloader.component';
     }),
   ],
   providers: [
+    AuthAdminGuard,
+    AuthTeacherGouard,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
@@ -38,7 +43,6 @@ import { PreloaderComponent } from './shared/preloader/preloader.component';
       useClass: ErrorInterceptor,
       multi: true,
     },
-    AuthGuard,
   ],
   bootstrap: [AppComponent],
 })

@@ -1,5 +1,8 @@
-<div class="d-flex justify-content-center align-items-center wrapper">
+<div
+  class="d-flex justify-content-center align-items-center wrapper"
+  [ngClass]="{ 'transparent-bg': transparentBg }">
   <div class="loader">
+    <p class="mb-1 text-center">{{ loaderMessage }}</p>
     <div class="box box-1">
       <div class="side-left"></div>
       <div class="side-right"></div>

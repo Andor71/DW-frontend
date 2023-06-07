@@ -161,12 +161,12 @@
               class="form-check-input mb-5"
               [(ngModel)]="visibility" />
             <label class="form-check-label" for="visibility"
-              >Visible for everyone:</label
+              >Kiirni egy hallgatónak:</label
             >
           </div>
 
           <div class="form-group mb-3" *ngIf="visibility">
-            <label for="student"><h5>Assigne to student</h5></label>
+            <label for="student"><h5>Elérhető hallgatók</h5></label>
             <ng-select
               id="student"
               name="student"
@@ -182,7 +182,7 @@
             <div
               *ngIf="submitted && error == 6 && visibility"
               class="invalid-feedback">
-              Choose a student!
+              Válassz ki egy hallgatót!
             </div>
           </div>
         </div>

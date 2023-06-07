@@ -37,29 +37,19 @@
                 <div
                   class="card-header"
                   [ngClass]="{
-                    'bg-light': diploma.stage === 'Terv',
-                    'bg-warning': diploma.stage === 'Kivitelezés',
-                    'bg-primary': diploma.stage === 'Elkészítve'
+                    'bg-light':
+                      getDiplomaStage(diploma.stage) === 'PLAN',
+                    'bg-warning':
+                      getDiplomaStage(diploma.stage) ===
+                      'UNDER_IMPLEMENTATION',
+                    'bg-primary':
+                      getDiplomaStage(diploma.stage) === 'FINISHED'
                   }">
                   <h6 class="card-title mb-0">
                     {{ diploma.title }}
                   </h6>
                 </div>
                 <div class="card-body">
-                  <ng-container *ngIf="diploma.taken">
-                    <h6 class="card-title">Tanuló: Pál Andor</h6>
-                    <h6 class="card-title">Szak: Számitástechnika</h6>
-                  </ng-container>
-                  <ng-container *ngIf="!diploma.taken">
-                    <ng-container *ngIf="diploma.visibility">
-                      <h6 class="card-title">
-                        Látható mindenki számára
-                      </h6>
-                    </ng-container>
-                    <ng-container *ngIf="!diploma.visibility">
-                      <h6 class="card-title">Diploma elrejtve</h6>
-                    </ng-container>
-                  </ng-container>
                   <div class="d-flex flex-wrap gap-2 fs-15 flex-row">
                     <span
                       *ngFor="

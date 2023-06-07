@@ -49,7 +49,7 @@ export class PeriodComponent implements OnInit {
 
   getById() {
     this.periodService
-      .getbyMajorID(this.id)
+      .getById(this.id)
       .pipe(first())
       .subscribe({
         next: (periodDto) => {
@@ -63,14 +63,12 @@ export class PeriodComponent implements OnInit {
               periodDto[field] = new Date(periodDto[field]);
             }
           }
-          console.log(periodDto);
-
           this.initForm();
           this.isLoading = false;
         },
         error: (e) => {
           this.toastrService.toastrError(
-            'An error occurred while loading period!'
+            'Hiba lépett fel az időszak betöltése közben!'
           );
           this.isLoading = false;
         },
@@ -84,7 +82,7 @@ export class PeriodComponent implements OnInit {
         if (this.periodDto[keys[i]] > this.periodDto[keys[i + 1]]) {
           this.updatePeriodForm.get(keys[i]).setValue('');
           this.updatePeriodForm.get(keys[i + 1]).setValue('');
-          this.toastrService.toastrError('Wrong Dates!');
+          this.toastrService.toastrError('Hibás dátumok!');
           return false;
         }
       }

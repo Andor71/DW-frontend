@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-preloader',
@@ -7,6 +7,8 @@ import { Component } from '@angular/core';
 })
 export class PreloaderComponent {
   constructor() {}
+  @Input() loaderMessage: string = '';
+  @Input() transparentBg: boolean = false;
 
   ngOnInit(): void {}
 }

@@ -47,4 +47,9 @@ export class PeriodService {
       `${environment.apiUrl}/period/get-all-period-by-year`
     );
   }
+  getCurrentPeriodForMajor(majorID: number): Observable<PeriodDto> {
+    return this.http.get<PeriodDto>(
+      `${environment.apiUrl}/period/get-current-period-for-major/${majorID}`
+    );
+  }
 }

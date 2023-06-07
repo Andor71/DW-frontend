@@ -2,6 +2,9 @@
   height: 70vh;
 }
 
+.transparent-bg {
+  background-color: transparent;
+}
 .loader {
   scale: 3;
   height: 50px;
@@ -132,4 +135,8 @@
     translate: 0px 30px;
     opacity: 0;
   }
+}
+
+p {
+  font-size: 6px;
 }

@@ -6,6 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { DiplomaComponent } from './diploma/diploma.component';
 import { FormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 const routes: Routes = [
   {
@@ -35,6 +36,7 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     NgbModule,
+    NgxPaginationModule,
     FormsModule,
     SortablejsModule,
   ],

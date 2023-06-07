@@ -1,3 +1,4 @@
+import { DiplomaStages } from '../enums/diploma.enums';
 import { PeriodDto } from './Period.model';
 import { UserDto } from './user.model';
 
@@ -7,7 +8,7 @@ export class DiplomaDto {
   periods: Array<PeriodDto>;
   student: UserDto;
   score: number;
-  stage: string;
+  stage: DiplomaStages;
   visibility: number;
   keywords: string;
   type: string;
@@ -22,4 +23,9 @@ export class DiplomaDto {
   necessaryKnowledge: string;
   differentExpectations: string;
   teachers: Array<UserDto>;
+}
+
+export class ScoreDto {
+  id: number;
+  score: number;
 }

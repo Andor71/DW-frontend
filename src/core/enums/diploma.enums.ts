@@ -1,0 +1,5 @@
+export enum DiplomaStages {
+  PLAN = 'PLAN',
+  UNDER_IMPLEMENTATION = 'UNDER_IMPLEMENTATION',
+  FINISHED = 'FINISHED',
+}

@@ -24,7 +24,7 @@ import Swal from 'sweetalert2';
 export class PeriodsComponent implements OnInit {
   //Data
   public periodsByYear: Array<PeriodsByYear> = Array();
-  public documents: Array<DocumentResponseDto> =
+  public documentsByYear: Array<DocumentResponseDto> =
     new Array<DocumentResponseDto>();
 
   //Helper
@@ -64,8 +64,8 @@ export class PeriodsComponent implements OnInit {
 
   deleteDocument(id) {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: 'Biztos vagy benne?',
+      text: 'Ezt a müveletet nem lehet visszaforditani!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
@@ -76,7 +76,7 @@ export class PeriodsComponent implements OnInit {
           .pipe(first())
           .subscribe({
             next: (id) => {
-              this.documents.forEach((x) => {
+              this.documentsByYear.forEach((x) => {
                 x.documents = x.documents.filter(
                   (y) => y.documentId != id
                 );
@@ -101,8 +101,11 @@ export class PeriodsComponent implements OnInit {
       this.documentService.getAll(),
     ]).subscribe(
       ([periodsByYear, documents]) => {
-        this.periodsByYear = periodsByYear;
-        this.documents = documents;
+        this.periodsByYear = periodsByYear.sort((a, b) =>
+          a.year.firstYear > b.year.firstYear ? -1 : 1
+        );
+        this.documentsByYear = documents;
+
         this.canCreatePeriodFun();
         this.isLoading = false;
       },
@@ -115,22 +118,20 @@ export class PeriodsComponent implements OnInit {
   }
   deletePeriod(id) {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: 'Biztos vagy benne ?',
+      text: 'Ezt a müveletet nem lehet visszaforditani!',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: 'Igen, töröld!',
     }).then((result) => {
       if (result.isConfirmed) {
         this.periodService
           .delete(id)
           .pipe(first())
           .subscribe({
-            next: (id) => {
+            next: () => {
               this.periodsByYear.forEach((x) => {
-                x.periods = x.periods.filter((y) => {
-                  y.major.majorId != id;
-                });
+                x.periods = x.periods.filter((y) => y.periodId != id);
               });
               this.toastrService.toastrSuccess(
                 'Időszak sikeresen törölve!'
@@ -158,7 +159,14 @@ export class PeriodsComponent implements OnInit {
       .create()
       .pipe(first())
       .subscribe({
-        next: () => {
+        next: (year) => {
+          let periodsByYear = new PeriodsByYear();
+          periodsByYear.year = year;
+          periodsByYear.periods = new Array<PeriodDto>();
+          this.periodsByYear.push(periodsByYear);
+          this.periodsByYear = this.periodsByYear.sort((a, b) =>
+            a.year.firstYear > b.year.firstYear ? -1 : 1
+          );
           this.toastrService.toastrSuccess(
             'Év sikeresen létrehozva!'
           );
@@ -193,7 +201,7 @@ export class PeriodsComponent implements OnInit {
       .pipe(first())
       .subscribe({
         next: (documentDto) => {
-          this.documents.forEach((x) => {
+          this.documentsByYear.forEach((x) => {
             if (x.yearDto.id == yearID) {
               documentDto.forEach((y) => {
                 x.documents.push(y);
@@ -217,7 +225,7 @@ export class PeriodsComponent implements OnInit {
       .downloadFile(documentID)
       .subscribe((response) => {
         let doc: DocumentDto;
-        this.documents.filter((x) => {
+        this.documentsByYear.filter((x) => {
           doc = x.documents.filter(
             (y) => y.documentId == documentID
           )[0];

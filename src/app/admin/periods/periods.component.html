@@ -103,12 +103,13 @@
                           </h4>
                           <h5>
                             Létrehozott időszakok:
-                            {{ period.periods.length }} / 12
+                            {{ period.periods.length }} / 13
                           </h5>
                         </div>
 
                         <div class="col d-flex justify-content-end">
                           <button
+                            *ngIf="period.periods.length !== 13"
                             routerLink="/admin/create-period/{{
                               period.year.id
                             }}"
@@ -157,12 +158,22 @@
                               <div
                                 class="card my-2"
                                 id="{{ period.major.programme }}">
-                                <div class="card-header p-4 py-2">
+                                <div class="card-header m-2">
                                   <div
                                     class="row align-items-center justify-content-between">
                                     <div class="col-auto me-5">
                                       <h4 class="m-0">
-                                        {{ period.major.programme }}
+                                        {{
+                                          period.major.programme
+                                            | slice : 0 : 30
+                                        }}
+                                        <ng-container
+                                          *ngIf="
+                                            period.major.programme
+                                              .length > 30
+                                          ">
+                                          ...
+                                        </ng-container>
                                       </h4>
                                     </div>
                                     <div
@@ -182,7 +193,7 @@
                                         class="btn btn-icon btn-outline-warning me-2"
                                         [routerLink]="[
                                           '/admin/period/' +
-                                            period.major.majorId
+                                            period.periodId
                                         ]">
                                         <i
                                           class="ri-edit-box-line"></i>
@@ -192,7 +203,7 @@
                                         class="btn btn-icon btn-outline-danger"
                                         (click)="
                                           deletePeriod(
-                                            period.major.majorId
+                                            period.periodId
                                           )
                                         ">
                                         <i
@@ -253,7 +264,9 @@
                                 id="document-list">
                                 <h5>Feltöltött dokumentumok</h5>
                                 <ng-container
-                                  *ngFor="let document of documents">
+                                  *ngFor="
+                                    let document of documentsByYear
+                                  ">
                                   <ng-container
                                     *ngIf="
                                       document.yearDto.id ==
@@ -297,10 +310,16 @@
                                               class="ri-file-2-fill me-1 text-danger display-4 pdf-icon"></i>
                                             <h4 class="mb-0">
                                               {{
-                                                (doc.name
-                                                  | slice : 0 : 25) +
-                                                  '...'
+                                                doc.name
+                                                  | slice : 0 : 25
                                               }}
+                                              <ng-container
+                                                *ngIf="
+                                                  doc.name.length >=
+                                                  30
+                                                ">
+                                                ...
+                                              </ng-container>
                                             </h4>
                                           </div>
 
