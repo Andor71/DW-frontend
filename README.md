@@ -8,9 +8,6 @@ I'm developing a web application for universities to help graduating students dy
 
 ## Frameworks
 
-For frontend development: Angular
-E2E testing: Cypress
-
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.4.
 
 ## Development server
