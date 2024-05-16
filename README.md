@@ -1,10 +1,15 @@
 # State Exam Project Frontend
 
+## Overview
+
+I'm developing a web application for universities to help graduating students dynamically choose their degree program and support its development.
+
+![alt text](https://github.com/Andor71/State-Exam-Project-Frontend/blob/main/images/frontendscreen.png?raw=true) 
+
 ## Frameworks
 
-![alt text](https://github.com/Andor71/State-Exam-Project-Frontend/blob/main/images/angular.png?raw=true | width=100)
-![alt text](https://github.com/Andor71/State-Exam-Project-Frontend/blob/main/images/cypress.svg?raw=true | width=100)
-
+For frontend development: Angular
+E2E testing: Cypress
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.4.
 
