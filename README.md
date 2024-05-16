@@ -2,8 +2,8 @@
 
 ## Frameworks
 
-![alt text](https://github.com/Andor71/State-Exam-Project-Frontend/blob/main/images/angular.png?raw=true)
-![alt text](https://github.com/Andor71/State-Exam-Project-Frontend/blob/main/images/cypress.svg?raw=true)
+![alt text](https://github.com/Andor71/State-Exam-Project-Frontend/blob/main/images/angular.png?raw=true | width=100)
+![alt text](https://github.com/Andor71/State-Exam-Project-Frontend/blob/main/images/cypress.svg?raw=true | width=100)
 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.4.
